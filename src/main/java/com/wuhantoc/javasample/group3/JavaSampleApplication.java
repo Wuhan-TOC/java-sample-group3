@@ -1,4 +1,4 @@
-package com.wuhantoc.javasample;
+package com.wuhantoc.javasample.group3;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
