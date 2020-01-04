@@ -8,6 +8,7 @@ public class Locker {
     private boolean FullLocker;
 
     void fillToTheFull() {
+        this.FullLocker=true;
     }
 
     public SavePackageResult savePackage() {
@@ -21,13 +22,12 @@ public class Locker {
             savePackageResult.setSuccesssFlag(true);
             savePackageResult.setErrorMessage(null);
         }
-       // throw new UnsupportedOperationException();
         return  savePackageResult;
     }
 
     public GetPackageResult getPackage(String ticket) {
         GetPackageResult getPackageResult=new GetPackageResult();
-        if(ticket.equals("Correct_Ticket")){
+        if(ticket.equals("ticket")){
             getPackageResult.setSuccessFlag(true);
             getPackageResult.setErrorMessage(null);
         }else{
