@@ -7,6 +7,8 @@ public class Locker {
 
     private boolean FullLocker;
 
+    void fillToTheFull() {
+    }
 
     public SavePackageResult savePackage() {
         SavePackageResult savePackageResult=new SavePackageResult();
@@ -26,11 +28,9 @@ public class Locker {
     public GetPackageResult getPackage(String ticket) {
         GetPackageResult getPackageResult=new GetPackageResult();
         if(ticket.equals("Correct_Ticket")){
-            getPackageResult.setApackage("a package");
             getPackageResult.setSuccessFlag(true);
             getPackageResult.setErrorMessage(null);
         }else{
-            getPackageResult.setApackage(null);
             getPackageResult.setSuccessFlag(false);
             getPackageResult.setErrorMessage("you ticket is not correct");
         }

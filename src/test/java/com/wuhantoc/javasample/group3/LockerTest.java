@@ -5,13 +5,8 @@ import org.junit.jupiter.api.Test;
 
 class LockerTest {
 
-    private Locker initAvailableLocker() { return new Locker(); }
-    private Locker initFullLocker() {
-
-        Locker locker=new Locker();
-        locker.setFullLocker(true);
-        return locker;
-
+    private Locker initAvailableLocker() {
+        return new Locker();
     }
 
     //存包正确
@@ -28,15 +23,19 @@ class LockerTest {
         Assertions.assertNotNull(ticket.getTicket());
     }
 
+    private Locker initFullLocker() {
+        Locker locker = new Locker();
+        locker.fillToTheFull();
+        return locker;
+    }
 
-
-    @Test
     //存包错误
+    @Test
     void should_get_error_message_when_save_package_given_full_locker() {
         // given
-        Locker locker=initFullLocker();
+        Locker locker = initFullLocker();
         // when
-        SavePackageResult errorMessage =locker.savePackage();
+        SavePackageResult errorMessage = locker.savePackage();
         // then
         Assertions.assertNotNull(errorMessage);
         Assertions.assertNotNull(errorMessage.getErrorMessage());
@@ -44,39 +43,50 @@ class LockerTest {
         Assertions.assertNull(errorMessage.getTicket());
     }
 
+    private String initCorrectTicket(Locker availableLocker){
+        SavePackageResult result = availableLocker.savePackage();
+        if(result.isSuccesssFlag()){
+            return result.getTicket();
+        }
+        throw new RuntimeException(result.getErrorMessage());
+    }
 
-
-   @Test
     //正确取包
-    void should_get_package_when_get_package_given_correct_ticket(){
+    @Test
+    void should_get_package_when_get_package_given_correct_ticket() {
 
         //given
-       Locker locker=initAvailableLocker();
-       String correctTicket="Correct_Ticket";
-       //when
-       GetPackageResult getAPackage=locker.getPackage(correctTicket);
-       //then
-       Assertions.assertNotNull(getAPackage);
-       Assertions.assertTrue(getAPackage.isSuccessFlag());
-       Assertions.assertNotNull(getAPackage.getApackage());
-       Assertions.assertNull(getAPackage.getErrorMessage());
-
-   }
-
-   @Test
-    //错误取包
-    void should_get_error_message_when_get_message_given_error_ticket(){
-
-        //given
-        Locker locker=initAvailableLocker();
-        String errorTicket="Error_Ticket";
+        Locker locker = initAvailableLocker();
+        String correctTicket = initCorrectTicket(locker);
         //when
-        GetPackageResult getAPackage=locker.getPackage(errorTicket);
+        GetPackageResult getAPackage = locker.getPackage(correctTicket);
+        //then
+        Assertions.assertNotNull(getAPackage);
+        Assertions.assertTrue(getAPackage.isSuccessFlag());
+        Assertions.assertNull(getAPackage.getErrorMessage());
+    }
+
+    private String initWrongTicket(Locker availableLocker){
+        SavePackageResult result = availableLocker.savePackage();
+        if(result.isSuccesssFlag()){
+            return result.getTicket()+"#wrong";
+        }
+        throw new RuntimeException(result.getErrorMessage());
+    }
+
+    //错误取包
+    @Test
+    void should_get_error_message_when_get_message_given_error_ticket() {
+
+        //given
+        Locker locker = initAvailableLocker();
+        String wrongTicket = initWrongTicket(locker);
+        //when
+        GetPackageResult getAPackage = locker.getPackage(wrongTicket);
         //then
         Assertions.assertNotNull(getAPackage);
         Assertions.assertFalse(getAPackage.isSuccessFlag());
         Assertions.assertNotNull(getAPackage.getErrorMessage());
-        Assertions.assertNull(getAPackage.getApackage());
     }
 
 
