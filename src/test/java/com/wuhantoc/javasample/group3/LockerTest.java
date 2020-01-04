@@ -3,6 +3,14 @@ package com.wuhantoc.javasample.group3;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import static com.wuhantoc.javasample.group3.Locker.FULL_LOCKER_MESSAGE;
+import static com.wuhantoc.javasample.group3.Locker.WRONG_TICKET_MESSAGE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 class LockerTest {
 
     private Locker initAvailableLocker() {
@@ -15,12 +23,12 @@ class LockerTest {
         // given
         Locker locker = initAvailableLocker();
         // when
-        SavePackageResult ticket = locker.savePackage();
+        SavePackageResult result = locker.savePackage();
         // then
-        Assertions.assertNotNull(ticket);
-        Assertions.assertTrue(ticket.isSuccesssFlag());
-        Assertions.assertNull(ticket.getErrorMessage());
-        Assertions.assertNotNull(ticket.getTicket());
+        assertNotNull(result);
+        assertTrue(result.isSuccesssFlag());
+        assertNull(result.getErrorMessage());
+        assertNotNull(result.getTicket());
     }
 
     private Locker initFullLocker() {
@@ -35,12 +43,12 @@ class LockerTest {
         // given
         Locker locker = initFullLocker();
         // when
-        SavePackageResult errorMessage = locker.savePackage();
+        SavePackageResult result = locker.savePackage();
         // then
-        Assertions.assertNotNull(errorMessage);
-        Assertions.assertNotNull(errorMessage.getErrorMessage());
-        Assertions.assertFalse(errorMessage.isSuccesssFlag());
-        Assertions.assertNull(errorMessage.getTicket());
+        assertNotNull(result);
+        assertFalse(result.isSuccesssFlag());
+        assertNull(result.getTicket());
+        assertEquals(FULL_LOCKER_MESSAGE, result.getErrorMessage());
     }
 
     private String initCorrectTicket(Locker availableLocker){
@@ -54,39 +62,37 @@ class LockerTest {
     //正确取包
     @Test
     void should_get_package_when_get_package_given_correct_ticket() {
-
         //given
         Locker locker = initAvailableLocker();
         String correctTicket = initCorrectTicket(locker);
         //when
-        GetPackageResult getAPackage = locker.getPackage(correctTicket);
+        GetPackageResult result = locker.getPackage(correctTicket);
         //then
-        Assertions.assertNotNull(getAPackage);
-        Assertions.assertTrue(getAPackage.isSuccessFlag());
-        Assertions.assertNull(getAPackage.getErrorMessage());
+        assertNotNull(result);
+        assertTrue(result.isSuccessFlag());
+        assertNull(result.getErrorMessage());
     }
 
-    private String initWrongTicket(Locker availableLocker){
-        SavePackageResult result = availableLocker.savePackage();
+    private String initWrongTicket(Locker anyLocker){
+        SavePackageResult result = anyLocker.savePackage();
         if(result.isSuccesssFlag()){
             return result.getTicket()+"#wrong";
         }
-        throw new RuntimeException(result.getErrorMessage());
+        return "#wrong";
     }
 
     //错误取包
     @Test
     void should_get_error_message_when_get_message_given_error_ticket() {
-
         //given
         Locker locker = initAvailableLocker();
         String wrongTicket = initWrongTicket(locker);
         //when
-        GetPackageResult getAPackage = locker.getPackage(wrongTicket);
+        GetPackageResult result = locker.getPackage(wrongTicket);
         //then
-        Assertions.assertNotNull(getAPackage);
-        Assertions.assertFalse(getAPackage.isSuccessFlag());
-        Assertions.assertNotNull(getAPackage.getErrorMessage());
+        assertNotNull(result);
+        assertFalse(result.isSuccessFlag());
+        assertEquals(WRONG_TICKET_MESSAGE, result.getErrorMessage());
     }
 
 
