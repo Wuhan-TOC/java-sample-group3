@@ -1,6 +1,5 @@
 package com.wuhantoc.javasample.group3;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static com.wuhantoc.javasample.group3.Locker.FULL_LOCKER_MESSAGE;
@@ -26,7 +25,7 @@ class LockerTest {
         SavePackageResult result = locker.savePackage();
         // then
         assertNotNull(result);
-        assertTrue(result.isSuccesssFlag());
+        assertTrue(result.isSuccessFlag());
         assertNull(result.getErrorMessage());
         assertNotNull(result.getTicket());
     }
@@ -46,14 +45,14 @@ class LockerTest {
         SavePackageResult result = locker.savePackage();
         // then
         assertNotNull(result);
-        assertFalse(result.isSuccesssFlag());
+        assertFalse(result.isSuccessFlag());
         assertNull(result.getTicket());
         assertEquals(FULL_LOCKER_MESSAGE, result.getErrorMessage());
     }
 
     private String initCorrectTicket(Locker availableLocker){
         SavePackageResult result = availableLocker.savePackage();
-        if(result.isSuccesssFlag()){
+        if(result.isSuccessFlag()){
             return result.getTicket();
         }
         throw new RuntimeException(result.getErrorMessage());
@@ -75,7 +74,7 @@ class LockerTest {
 
     private String initWrongTicket(Locker anyLocker){
         SavePackageResult result = anyLocker.savePackage();
-        if(result.isSuccesssFlag()){
+        if(result.isSuccessFlag()){
             return result.getTicket()+"#wrong";
         }
         return "#wrong";
