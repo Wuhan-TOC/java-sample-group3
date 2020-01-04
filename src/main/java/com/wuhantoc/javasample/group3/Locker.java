@@ -1,16 +1,41 @@
 package com.wuhantoc.javasample.group3;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import lombok.Data;
 
+@Data
 public class Locker {
 
-    public String savePackage() {
-        throw new UnsupportedOperationException();
+    private boolean FullLocker;
+
+
+    public SavePackageResult savePackage() {
+        SavePackageResult savePackageResult=new SavePackageResult();
+        if(this.FullLocker==true){
+            savePackageResult.setTicket(null);
+            savePackageResult.setSuccesssFlag(false);
+            savePackageResult.setErrorMessage("Locker is Full");
+        }else{
+            savePackageResult.setTicket("ticket");
+            savePackageResult.setSuccesssFlag(true);
+            savePackageResult.setErrorMessage(null);
+        }
+       // throw new UnsupportedOperationException();
+        return  savePackageResult;
     }
 
-    public boolean getPackage(String ticket) {
-        throw new UnsupportedOperationException();
+    public GetPackageResult getPackage(String ticket) {
+        GetPackageResult getPackageResult=new GetPackageResult();
+        if(ticket.equals("Correct_Ticket")){
+            getPackageResult.setApackage("a package");
+            getPackageResult.setSuccessFlag(true);
+            getPackageResult.setErrorMessage(null);
+        }else{
+            getPackageResult.setApackage(null);
+            getPackageResult.setSuccessFlag(false);
+            getPackageResult.setErrorMessage("you ticket is not correct");
+        }
+        return getPackageResult;
     }
+
+
 }
