@@ -29,6 +29,18 @@ public class Locker {
         }
     }
 
+    String generateCorrectTicket() {
+        return storage.stream().findAny().orElse(savePackage().getTicket());
+    }
+
+    String generateWrongTicket() {
+        String wrongTicket = UUID.randomUUID().toString();
+        while (storage.contains(wrongTicket)) {
+            wrongTicket = UUID.randomUUID().toString();
+        }
+        return wrongTicket;
+    }
+
     public SavePackageResult savePackage() {
         if (STORAGE_SIZE == storage.size()) {
             return savePackageFail(FULL_LOCKER_MESSAGE);

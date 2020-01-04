@@ -50,12 +50,8 @@ class LockerTest {
         assertEquals(FULL_LOCKER_MESSAGE, result.getErrorMessage());
     }
 
-    private String initCorrectTicket(Locker availableLocker){
-        SavePackageResult result = availableLocker.savePackage();
-        if(result.isSuccessFlag()){
-            return result.getTicket();
-        }
-        throw new RuntimeException(result.getErrorMessage());
+    private String initCorrectTicket(Locker anyLocker){
+        return anyLocker.generateCorrectTicket();
     }
 
     //正确取包
@@ -73,11 +69,7 @@ class LockerTest {
     }
 
     private String initWrongTicket(Locker anyLocker){
-        SavePackageResult result = anyLocker.savePackage();
-        if(result.isSuccessFlag()){
-            return result.getTicket()+"#wrong";
-        }
-        return "#wrong";
+        return anyLocker.generateWrongTicket();
     }
 
     //错误取包
