@@ -2,6 +2,7 @@ package com.wuhantoc.javasample.group3;
 
 import org.junit.jupiter.api.Test;
 
+import static com.wuhantoc.javasample.group3.Constant.MUST_BE_WRONG_TICKET;
 import static com.wuhantoc.javasample.group3.Locker.FULL_LOCKER_MESSAGE;
 import static com.wuhantoc.javasample.group3.Locker.WRONG_TICKET_MESSAGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -63,19 +64,15 @@ class LockerTest {
         Locker locker = initAvailableLocker();
         String correctTicket = initCorrectTicket(locker);
         //when
-        LockerGetPackageResult result = locker.getPackage(correctTicket);
+        GetPackageResult result = locker.getPackage(correctTicket);
         //then
         assertNotNull(result);
-        assertTrue(result.isSuccessFlag());
+        assertTrue(result.isSuccess());
         assertNull(result.getErrorMessage());
     }
 
     private String initWrongTicket(Locker anyLocker){
-        LockerSavePackageResult result = anyLocker.savePackage();
-        if(result.isSuccess()){
-            return result.getTicket()+"#wrong";
-        }
-        return "#wrong";
+        return MUST_BE_WRONG_TICKET;
     }
 
     //错误取包
@@ -85,10 +82,10 @@ class LockerTest {
         Locker locker = initAvailableLocker();
         String wrongTicket = initWrongTicket(locker);
         //when
-        LockerGetPackageResult result = locker.getPackage(wrongTicket);
+        GetPackageResult result = locker.getPackage(wrongTicket);
         //then
         assertNotNull(result);
-        assertFalse(result.isSuccessFlag());
+        assertFalse(result.isSuccess());
         assertEquals(WRONG_TICKET_MESSAGE, result.getErrorMessage());
     }
 

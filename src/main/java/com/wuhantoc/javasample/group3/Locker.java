@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.wuhantoc.javasample.group3.LockerGetPackageResult.getPackageFail;
-import static com.wuhantoc.javasample.group3.LockerGetPackageResult.getPackageSuccess;
+import static com.wuhantoc.javasample.group3.GetPackageResult.getPackageFail;
+import static com.wuhantoc.javasample.group3.GetPackageResult.getPackageSuccess;
 import static com.wuhantoc.javasample.group3.LockerSavePackageResult.savePackageFail;
 import static com.wuhantoc.javasample.group3.LockerSavePackageResult.savePackageSuccess;
 
@@ -38,7 +38,7 @@ public class Locker {
         return savePackageSuccess(ticket);
     }
 
-    public LockerGetPackageResult getPackage(String ticket) {
+    public GetPackageResult getPackage(String ticket) {
         if (storage.remove(ticket)) {
             return getPackageSuccess();
         } else {
