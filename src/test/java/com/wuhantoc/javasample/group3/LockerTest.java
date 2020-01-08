@@ -22,10 +22,10 @@ class LockerTest {
         // given
         Locker locker = initAvailableLocker();
         // when
-        SavePackageResult result = locker.savePackage();
+        LockerSavePackageResult result = locker.savePackage();
         // then
         assertNotNull(result);
-        assertTrue(result.isSuccessFlag());
+        assertTrue(result.isSuccess());
         assertNull(result.getErrorMessage());
         assertNotNull(result.getTicket());
     }
@@ -40,17 +40,17 @@ class LockerTest {
         // given
         Locker locker = initFullLocker();
         // when
-        SavePackageResult result = locker.savePackage();
+        LockerSavePackageResult result = locker.savePackage();
         // then
         assertNotNull(result);
-        assertFalse(result.isSuccessFlag());
+        assertFalse(result.isSuccess());
         assertNull(result.getTicket());
         assertEquals(FULL_LOCKER_MESSAGE, result.getErrorMessage());
     }
 
     private String initCorrectTicket(Locker availableLocker){
-        SavePackageResult result = availableLocker.savePackage();
-        if(result.isSuccessFlag()){
+        LockerSavePackageResult result = availableLocker.savePackage();
+        if(result.isSuccess()){
             return result.getTicket();
         }
         throw new RuntimeException(result.getErrorMessage());
@@ -63,7 +63,7 @@ class LockerTest {
         Locker locker = initAvailableLocker();
         String correctTicket = initCorrectTicket(locker);
         //when
-        GetPackageResult result = locker.getPackage(correctTicket);
+        LockerGetPackageResult result = locker.getPackage(correctTicket);
         //then
         assertNotNull(result);
         assertTrue(result.isSuccessFlag());
@@ -71,8 +71,8 @@ class LockerTest {
     }
 
     private String initWrongTicket(Locker anyLocker){
-        SavePackageResult result = anyLocker.savePackage();
-        if(result.isSuccessFlag()){
+        LockerSavePackageResult result = anyLocker.savePackage();
+        if(result.isSuccess()){
             return result.getTicket()+"#wrong";
         }
         return "#wrong";
@@ -85,7 +85,7 @@ class LockerTest {
         Locker locker = initAvailableLocker();
         String wrongTicket = initWrongTicket(locker);
         //when
-        GetPackageResult result = locker.getPackage(wrongTicket);
+        LockerGetPackageResult result = locker.getPackage(wrongTicket);
         //then
         assertNotNull(result);
         assertFalse(result.isSuccessFlag());

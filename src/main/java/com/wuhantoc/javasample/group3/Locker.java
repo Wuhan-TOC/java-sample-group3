@@ -3,14 +3,13 @@ package com.wuhantoc.javasample.group3;
 import lombok.Data;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.wuhantoc.javasample.group3.GetPackageResult.getPackageFail;
-import static com.wuhantoc.javasample.group3.GetPackageResult.getPackageSuccess;
-import static com.wuhantoc.javasample.group3.SavePackageResult.savePackageFail;
-import static com.wuhantoc.javasample.group3.SavePackageResult.savePackageSuccess;
+import static com.wuhantoc.javasample.group3.LockerGetPackageResult.getPackageFail;
+import static com.wuhantoc.javasample.group3.LockerGetPackageResult.getPackageSuccess;
+import static com.wuhantoc.javasample.group3.LockerSavePackageResult.savePackageFail;
+import static com.wuhantoc.javasample.group3.LockerSavePackageResult.savePackageSuccess;
 
 @Data
 public class Locker {
@@ -28,7 +27,7 @@ public class Locker {
         storage = new HashSet<>(capacity);
     }
 
-    public SavePackageResult savePackage() {
+    public LockerSavePackageResult savePackage() {
         if (capacity == storage.size()) {
             return savePackageFail(FULL_LOCKER_MESSAGE);
         }
@@ -39,7 +38,7 @@ public class Locker {
         return savePackageSuccess(ticket);
     }
 
-    public GetPackageResult getPackage(String ticket) {
+    public LockerGetPackageResult getPackage(String ticket) {
         if (storage.remove(ticket)) {
             return getPackageSuccess();
         } else {

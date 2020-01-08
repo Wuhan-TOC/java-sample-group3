@@ -5,15 +5,15 @@ import lombok.Data;
 
 @Data
 @Builder
-public class GetPackageResult {
+public class LockerGetPackageResult {
     private String errorMessage;
     private boolean successFlag;
 
-    public static GetPackageResult getPackageSuccess() {
+    public static LockerGetPackageResult getPackageSuccess() {
         return builder().successFlag(true).build();
     }
 
-    public static GetPackageResult getPackageFail(String reason) {
+    public static LockerGetPackageResult getPackageFail(String reason) {
         return builder().successFlag(false).errorMessage(reason).build();
     }
 }
