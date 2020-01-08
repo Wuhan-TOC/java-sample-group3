@@ -19,18 +19,17 @@ public class Locker {
 
     static final String WRONG_TICKET_MESSAGE = "Your ticket is not correct";
 
-    private static final int STORAGE_SIZE = 24;
+    private final int capacity;
 
-    private final Set<String> storage = new HashSet<>(STORAGE_SIZE);
+    private final Set<String> storage;
 
-    void fillToTheFull() {
-        while (storage.size() != STORAGE_SIZE) {
-            storage.add(Objects.toString(storage.size()));
-        }
+    public Locker(int capacity) {
+        this.capacity = capacity;
+        storage = new HashSet<>(capacity);
     }
 
     public SavePackageResult savePackage() {
-        if (STORAGE_SIZE == storage.size()) {
+        if (capacity == storage.size()) {
             return savePackageFail(FULL_LOCKER_MESSAGE);
         }
         String ticket = UUID.randomUUID().toString();

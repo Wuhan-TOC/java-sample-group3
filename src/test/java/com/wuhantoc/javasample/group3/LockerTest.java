@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class LockerTest {
 
     private Locker initAvailableLocker() {
-        return new Locker();
+        return new Locker(1);
     }
 
     //存包正确
@@ -31,9 +31,7 @@ class LockerTest {
     }
 
     private Locker initFullLocker() {
-        Locker locker = new Locker();
-        locker.fillToTheFull();
-        return locker;
+        return new Locker(0);
     }
 
     //存包错误
