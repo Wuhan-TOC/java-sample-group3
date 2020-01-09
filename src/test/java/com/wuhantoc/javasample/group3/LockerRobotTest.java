@@ -1,6 +1,7 @@
 package com.wuhantoc.javasample.group3;
 
 import com.wuhantoc.javasample.group3.impl.UUIDLocker;
+import com.wuhantoc.javasample.group3.mock.WouldOfferSameTicketInTheFirstFewTimesMockLocker;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import static com.wuhantoc.javasample.group3.Constant.MUST_BE_WRONG_TICKET;
 import static com.wuhantoc.javasample.group3.LockerRobot.LOCKERS_ARE_ALL_FULL_MESSAGES;
 import static com.wuhantoc.javasample.group3.LockerRobot.USED_TICKET_MESSAGE;
 import static com.wuhantoc.javasample.group3.LockerRobot.WRONG_TICKET_MESSAGE;
+import static com.wuhantoc.javasample.group3.mock.WouldOfferSameTicketInTheFirstFewTimesMockLocker.THE_SECOND_TICKET;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -150,6 +152,26 @@ class LockerRobotTest {
         RobotSavePackageResult savePackageResult = robot.savePackage();
         ticket = savePackageResult.getTicket();
         savePackageResult.getLocker().getPackage(ticket);
+    }
+
+    @Test
+    void should_get_the_correct_ticket_when_save_package_given_robot_with_ticket_collision_locker() {
+        // given
+        initRobotWithTicketCollisionLocker();
+        // when
+        RobotSavePackageResult result = robot.savePackage();
+        // then
+        assertNotNull(result);
+        assertTrue(result.isSuccess());
+        assertEquals(THE_SECOND_TICKET, result.getTicket());
+    }
+
+    private void initRobotWithTicketCollisionLocker() {
+        firstLocker = new WouldOfferSameTicketInTheFirstFewTimesMockLocker(3);
+        List<Locker> lockers = new ArrayList<>();
+        lockers.add(firstLocker);
+        robot = new LockerRobot(lockers);
+        robot.savePackage();
     }
 
 }

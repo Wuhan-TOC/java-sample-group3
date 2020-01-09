@@ -28,6 +28,10 @@ public class LockerRobot {
         for (Locker locker : lockers) {
             LockerSavePackageResult savePackageResult = locker.savePackage();
             if (savePackageResult.isSuccess()) {
+                while (ticketLockerCache.containsKey(savePackageResult.getTicket())) {
+                    locker.getPackage(savePackageResult.getTicket());
+                    savePackageResult = locker.savePackage();
+                }
                 ticketLockerCache.put(savePackageResult.getTicket(), locker);
                 return RobotSavePackageResult.savePackageSuccess(savePackageResult, locker);
             }
