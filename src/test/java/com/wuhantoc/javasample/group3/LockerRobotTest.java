@@ -1,5 +1,6 @@
 package com.wuhantoc.javasample.group3;
 
+import com.wuhantoc.javasample.group3.impl.UUIDLocker;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -42,9 +43,9 @@ class LockerRobotTest {
     }
 
     private void initRobotWithMiddleFullLockers() {
-        firstLocker = new Locker(1);
-        middleLocker = new Locker(0);
-        lastLocker = new Locker(1);
+        firstLocker = new UUIDLocker(1);
+        middleLocker = new UUIDLocker(0);
+        lastLocker = new UUIDLocker(1);
         List<Locker> lockers = new ArrayList<>();
         lockers.add(firstLocker);
         lockers.add(middleLocker);
@@ -67,9 +68,9 @@ class LockerRobotTest {
     }
 
     private void initRobotWithAllFullLockers() {
-        firstLocker = new Locker(0);
-        middleLocker = new Locker(0);
-        lastLocker = new Locker(0);
+        firstLocker = new UUIDLocker(0);
+        middleLocker = new UUIDLocker(0);
+        lastLocker = new UUIDLocker(0);
         List<Locker> lockers = new ArrayList<>();
         lockers.add(firstLocker);
         lockers.add(middleLocker);
@@ -90,9 +91,9 @@ class LockerRobotTest {
     }
 
     private void initCorrectTicket() {
-        firstLocker = new Locker(1);
-        middleLocker = new Locker(1);
-        lastLocker = new Locker(1);
+        firstLocker = new UUIDLocker(1);
+        middleLocker = new UUIDLocker(1);
+        lastLocker = new UUIDLocker(1);
         List<Locker> lockers = new ArrayList<>();
         lockers.add(firstLocker);
         lockers.add(middleLocker);
@@ -114,9 +115,9 @@ class LockerRobotTest {
     }
 
     private void initWrongTicket() {
-        firstLocker = new Locker(1);
-        middleLocker = new Locker(1);
-        lastLocker = new Locker(1);
+        firstLocker = new UUIDLocker(1);
+        middleLocker = new UUIDLocker(1);
+        lastLocker = new UUIDLocker(1);
         List<Locker> lockers = new ArrayList<>();
         lockers.add(firstLocker);
         lockers.add(middleLocker);
@@ -138,9 +139,9 @@ class LockerRobotTest {
     }
 
     private void initUsedTicket() {
-        firstLocker = new Locker(1);
-        middleLocker = new Locker(1);
-        lastLocker = new Locker(1);
+        firstLocker = new UUIDLocker(1);
+        middleLocker = new UUIDLocker(1);
+        lastLocker = new UUIDLocker(1);
         List<Locker> lockers = new ArrayList<>();
         lockers.add(firstLocker);
         lockers.add(middleLocker);

@@ -1,20 +1,23 @@
-package com.wuhantoc.javasample.group3;
+package com.wuhantoc.javasample.group3.impl;
 
+import com.wuhantoc.javasample.group3.GetPackageResult;
+import com.wuhantoc.javasample.group3.Locker;
+import com.wuhantoc.javasample.group3.LockerSavePackageResult;
 import org.junit.jupiter.api.Test;
 
 import static com.wuhantoc.javasample.group3.Constant.MUST_BE_WRONG_TICKET;
-import static com.wuhantoc.javasample.group3.Locker.FULL_LOCKER_MESSAGE;
-import static com.wuhantoc.javasample.group3.Locker.WRONG_TICKET_MESSAGE;
+import static com.wuhantoc.javasample.group3.impl.UUIDLocker.FULL_LOCKER_MESSAGE;
+import static com.wuhantoc.javasample.group3.impl.UUIDLocker.WRONG_TICKET_MESSAGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class LockerTest {
+class UUIDLockerTest {
 
     private Locker initAvailableLocker() {
-        return new Locker(1);
+        return new UUIDLocker(1);
     }
 
     //存包正确
@@ -32,7 +35,7 @@ class LockerTest {
     }
 
     private Locker initFullLocker() {
-        return new Locker(0);
+        return new UUIDLocker(0);
     }
 
     //存包错误
