@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class SimpleLockerBoxTest {
+class SimpleLockerBoxAsRobotAccessLockerBoxTest {
 
     private static final Cargo anyCargo = new Cargo() {
     };
@@ -52,11 +52,11 @@ class SimpleLockerBoxTest {
     }
 
     private RobotAccessLockerBox initEmptyRobotAccessBox() {
-        return new SimpleLockerBox();
+        return SimpleLockerBox.supplier().get();
     }
 
     private RobotAccessLockerBox initNotEmptyRobotAccessBox() {
-        SimpleLockerBox lockerBox = new SimpleLockerBox();
+        SimpleLockerBox lockerBox = SimpleLockerBox.supplier().get();
         lockerBox.store(anyCargo);
         return lockerBox;
     }
