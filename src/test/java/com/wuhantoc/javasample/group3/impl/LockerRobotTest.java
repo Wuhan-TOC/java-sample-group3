@@ -2,7 +2,6 @@ package com.wuhantoc.javasample.group3.impl;
 
 import com.wuhantoc.javasample.group3.Cargo;
 import com.wuhantoc.javasample.group3.LockerRobot;
-import com.wuhantoc.javasample.group3.RobotAccessLocker;
 import com.wuhantoc.javasample.group3.RobotAccessLockerBox;
 import com.wuhantoc.javasample.group3.RobotStoreCargoResult;
 import com.wuhantoc.javasample.group3.RobotTakeOutResult;
@@ -10,10 +9,12 @@ import com.wuhantoc.javasample.group3.RobotTakeoutCargoResult;
 import com.wuhantoc.javasample.group3.UserRobotAccessLocker;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 import static com.wuhantoc.javasample.group3.RobotStoreResult.storeFail;
 import static com.wuhantoc.javasample.group3.RobotStoreResult.storeSuccess;
+import static com.wuhantoc.javasample.group3.RobotTakeOutResult.takeOutSuccess;
 import static com.wuhantoc.javasample.group3.TextConstant.ROBOT_STORE_FAIL_MESSAGE;
 import static com.wuhantoc.javasample.group3.TextConstant.ROBOT_TAKE_OUT_FAIL_MESSAGE;
 import static com.wuhantoc.javasample.group3.TextConstant.USER_STORE_FAIL_MESSAGE;
@@ -74,6 +75,7 @@ public class LockerRobotTest {
         when(lockerBox.get()).thenReturn(ANY_CARGO);
         UserRobotAccessLocker locker = mock(UserRobotAccessLocker.class);
         when(locker.storeCargo()).thenReturn(storeSuccess(mockTicket, lockerBox));
+        when(locker.takeOutCargo(anyString())).thenReturn(takeOutSuccess(lockerBox));
         //given
         LockerRobot lockerRobot = initRobotWithGivenLockers(locker);
         RobotStoreCargoResult storeCargoResult = lockerRobot.storeCargo(ANY_CARGO);
@@ -86,7 +88,7 @@ public class LockerRobotTest {
     }
 
     @Test
-    void should_a_not_success_result_with_specified_error_message_when_take_out_cargo_given_a_robot_and_ticket_different_from_any_ticket_from_store_cargo_result() {
+    void should_get_a_not_success_result_with_specified_error_message_when_take_out_cargo_given_a_robot_and_ticket_different_from_any_ticket_from_store_cargo_result() {
         //mock
         String mockTicket = "mock ticket";
         RobotAccessLockerBox lockerBox = mock(RobotAccessLockerBox.class);
@@ -108,7 +110,7 @@ public class LockerRobotTest {
     }
 
     @Test
-    void should_a_not_success_result_with_specified_error_message_when_take_out_cargo_given_a_robot_and_used_ticket() {
+    void should_get_a_not_success_result_with_specified_error_message_when_take_out_cargo_given_a_robot_and_used_ticket() {
         //mock
         String mockTicket = "mock ticket";
         RobotAccessLockerBox lockerBox = mock(RobotAccessLockerBox.class);
@@ -128,8 +130,8 @@ public class LockerRobotTest {
         assertEquals(ROBOT_TAKE_OUT_FAIL_MESSAGE, takeoutCargoResult.getErrorMessage());
     }
 
-    private LockerRobot initRobotWithGivenLockers(RobotAccessLocker... lockers) {
-        return new LockerRobot();
+    private LockerRobot initRobotWithGivenLockers(UserRobotAccessLocker... lockers) {
+        return new LockerRobot(Arrays.asList(lockers));
     }
 
 }

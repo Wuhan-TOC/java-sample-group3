@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.util.UUID;
 
 import static com.wuhantoc.javasample.group3.RobotStoreResult.storeSuccess;
+import static com.wuhantoc.javasample.group3.RobotTakeOutResult.takeOutSuccess;
 import static com.wuhantoc.javasample.group3.TextConstant.ROBOT_STORE_FAIL_MESSAGE;
 import static com.wuhantoc.javasample.group3.TextConstant.ROBOT_TAKE_OUT_FAIL_MESSAGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -85,6 +86,7 @@ public class SuperLockerRobotTest {
         when(lockerBox.get()).thenReturn(ANY_CARGO);
         UserRobotAccessLocker locker = mock(UserRobotAccessLocker.class);
         when(locker.storeCargo()).thenReturn(storeSuccess(mockTicket, lockerBox));
+        when(locker.takeOutCargo(anyString())).thenReturn(takeOutSuccess(lockerBox));
         //given
         SuperLockerRobot superLockerRobot = initRobotWithGivenLockers(locker);
         RobotStoreCargoResult storeCargoResult = superLockerRobot.storeCargo(ANY_CARGO);
