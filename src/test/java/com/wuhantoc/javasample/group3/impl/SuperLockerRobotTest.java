@@ -10,6 +10,7 @@ import com.wuhantoc.javasample.group3.SuperLockerRobot;
 import com.wuhantoc.javasample.group3.UserRobotAccessLocker;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 import static com.wuhantoc.javasample.group3.RobotStoreResult.storeSuccess;
@@ -31,8 +32,11 @@ public class SuperLockerRobotTest {
     @Test
     void should_store_in_locker1_when_store_cargo_given_a_robot_with_100_empty_locker1_and_50_empty_locker2() {
         //mock
+        String mockTicket = "mock ticket";
+        RobotAccessLockerBox lockerBox = mock(RobotAccessLockerBox.class);
         UserRobotAccessLocker locker1 = mock(UserRobotAccessLocker.class);
         when(locker1.getEmptyRate()).thenReturn(1.0);
+        when(locker1.storeCargo()).thenReturn(storeSuccess(mockTicket, lockerBox));
         UserRobotAccessLocker locker2 = mock(UserRobotAccessLocker.class);
         when(locker2.getEmptyRate()).thenReturn(0.5);
         //given
@@ -48,8 +52,11 @@ public class SuperLockerRobotTest {
     @Test
     void should_store_in_locker1_when_store_cargo_given_a_robot_with_50_empty_locker1_and_50_empty_locker2() {
         //mock
+        String mockTicket = "mock ticket";
+        RobotAccessLockerBox lockerBox = mock(RobotAccessLockerBox.class);
         UserRobotAccessLocker locker1 = mock(UserRobotAccessLocker.class);
         when(locker1.getEmptyRate()).thenReturn(0.5);
+        when(locker1.storeCargo()).thenReturn(storeSuccess(mockTicket, lockerBox));
         UserRobotAccessLocker locker2 = mock(UserRobotAccessLocker.class);
         when(locker2.getEmptyRate()).thenReturn(0.5);
         //given
@@ -63,7 +70,7 @@ public class SuperLockerRobotTest {
     }
 
     @Test
-    void should_a_not_success_result_with_specified_error_message_when_store_cargo_given_a_robot_with_0_empty_locker1_and_0_empty_locker2() {
+    void should_get_a_not_success_result_with_specified_error_message_when_store_cargo_given_a_robot_with_0_empty_locker1_and_0_empty_locker2() {
         //mock
         UserRobotAccessLocker locker1 = mock(UserRobotAccessLocker.class);
         when(locker1.getEmptyRate()).thenReturn(0.0);
@@ -85,6 +92,7 @@ public class SuperLockerRobotTest {
         RobotAccessLockerBox lockerBox = mock(RobotAccessLockerBox.class);
         when(lockerBox.get()).thenReturn(ANY_CARGO);
         UserRobotAccessLocker locker = mock(UserRobotAccessLocker.class);
+        when(locker.getEmptyRate()).thenReturn(1.0);
         when(locker.storeCargo()).thenReturn(storeSuccess(mockTicket, lockerBox));
         when(locker.takeOutCargo(anyString())).thenReturn(takeOutSuccess(lockerBox));
         //given
@@ -127,8 +135,9 @@ public class SuperLockerRobotTest {
         RobotAccessLockerBox lockerBox = mock(RobotAccessLockerBox.class);
         when(lockerBox.get()).thenReturn(ANY_CARGO);
         UserRobotAccessLocker locker = mock(UserRobotAccessLocker.class);
+        when(locker.getEmptyRate()).thenReturn(1.0);
         when(locker.storeCargo()).thenReturn(storeSuccess(mockTicket, lockerBox));
-        when(locker.takeOutCargo(anyString())).thenReturn(RobotTakeOutResult.takeOutFail(""));
+        when(locker.takeOutCargo(anyString())).thenReturn(RobotTakeOutResult.takeOutFail(ROBOT_TAKE_OUT_FAIL_MESSAGE));
         //given
         SuperLockerRobot superLockerRobot = initRobotWithGivenLockers(locker);
         RobotStoreCargoResult storeCargoResult = superLockerRobot.storeCargo(ANY_CARGO);
@@ -141,8 +150,8 @@ public class SuperLockerRobotTest {
         assertEquals(ROBOT_TAKE_OUT_FAIL_MESSAGE, takeoutCargoResult.getErrorMessage());
     }
 
-    private SuperLockerRobot initRobotWithGivenLockers(RobotAccessLocker... lockers) {
-        return new SuperLockerRobot();
+    private SuperLockerRobot initRobotWithGivenLockers(UserRobotAccessLocker... lockers) {
+        return new SuperLockerRobot(Arrays.asList(lockers));
     }
 
 }
