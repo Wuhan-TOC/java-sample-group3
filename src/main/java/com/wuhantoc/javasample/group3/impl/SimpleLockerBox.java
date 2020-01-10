@@ -8,9 +8,6 @@ import com.wuhantoc.javasample.group3.exception.NotEmptyLockerBoxException;
 
 public class SimpleLockerBox implements UserAccessLockerBox, RobotAccessLockerBox {
 
-    private static final Cargo CARGO_STORED_BY_USER = new Cargo() {
-    };
-
     private Cargo cargo;
 
     @Override
