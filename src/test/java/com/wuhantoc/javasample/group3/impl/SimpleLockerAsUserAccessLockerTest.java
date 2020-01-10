@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
-import static com.wuhantoc.javasample.group3.TextConstant.FULL_LOCKER_MESSAGE;
-import static com.wuhantoc.javasample.group3.TextConstant.USE_TAKE_OUT_FAIL_MESSAGE;
+import static com.wuhantoc.javasample.group3.TextConstant.USER_STORE_FAIL_MESSAGE;
+import static com.wuhantoc.javasample.group3.TextConstant.USER_TAKE_OUT_FAIL_MESSAGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -41,7 +41,7 @@ class SimpleLockerAsUserAccessLockerTest {
         //then
         assertNotNull(result);
         assertFalse(result.isSuccess());
-        assertEquals(FULL_LOCKER_MESSAGE, result.getErrorMessage());
+        assertEquals(USER_STORE_FAIL_MESSAGE, result.getErrorMessage());
     }
 
     @Test
@@ -73,7 +73,7 @@ class SimpleLockerAsUserAccessLockerTest {
         //then
         assertNotNull(takeOutResult);
         assertFalse(takeOutResult.isSuccess());
-        assertEquals(USE_TAKE_OUT_FAIL_MESSAGE, takeOutResult.getErrorMessage());
+        assertEquals(USER_TAKE_OUT_FAIL_MESSAGE, takeOutResult.getErrorMessage());
     }
 
     private UserAccessLocker initAvailableUserAccessLocker() {

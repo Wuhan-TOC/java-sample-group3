@@ -6,12 +6,15 @@ import com.wuhantoc.javasample.group3.RobotAccessLockerBox;
 import com.wuhantoc.javasample.group3.RobotStoreCargoResult;
 import com.wuhantoc.javasample.group3.RobotTakeOutResult;
 import com.wuhantoc.javasample.group3.RobotTakeoutCargoResult;
+import com.wuhantoc.javasample.group3.SuperLockerRobot;
 import com.wuhantoc.javasample.group3.UserRobotAccessLocker;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
 import static com.wuhantoc.javasample.group3.RobotStoreResult.storeSuccess;
+import static com.wuhantoc.javasample.group3.TextConstant.ROBOT_STORE_FAIL_MESSAGE;
+import static com.wuhantoc.javasample.group3.TextConstant.ROBOT_TAKE_OUT_FAIL_MESSAGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -20,7 +23,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 
-public class SuperRobotTest {
+public class SuperLockerRobotTest {
 
     private static final Cargo ANY_CARGO = mock(Cargo.class);
 
@@ -32,9 +35,9 @@ public class SuperRobotTest {
         UserRobotAccessLocker locker2 = mock(UserRobotAccessLocker.class);
         when(locker2.getEmptyRate()).thenReturn(0.5);
         //given
-        SuperRobot superRobot = initRobotWithGivenLockers(locker1, locker2);
+        SuperLockerRobot superLockerRobot = initRobotWithGivenLockers(locker1, locker2);
         //when
-        RobotStoreCargoResult result = superRobot.storeCargo(ANY_CARGO);
+        RobotStoreCargoResult result = superLockerRobot.storeCargo(ANY_CARGO);
         //then
         assertTrue(result.isSuccess());
         assertNotNull(result.getTicket());
@@ -49,9 +52,9 @@ public class SuperRobotTest {
         UserRobotAccessLocker locker2 = mock(UserRobotAccessLocker.class);
         when(locker2.getEmptyRate()).thenReturn(0.5);
         //given
-        SuperRobot superRobot = initRobotWithGivenLockers(locker1, locker2);
+        SuperLockerRobot superLockerRobot = initRobotWithGivenLockers(locker1, locker2);
         //when
-        RobotStoreCargoResult result = superRobot.storeCargo(ANY_CARGO);
+        RobotStoreCargoResult result = superLockerRobot.storeCargo(ANY_CARGO);
         //then
         assertTrue(result.isSuccess());
         assertNotNull(result.getTicket());
@@ -66,12 +69,12 @@ public class SuperRobotTest {
         UserRobotAccessLocker locker2 = mock(UserRobotAccessLocker.class);
         when(locker2.getEmptyRate()).thenReturn(0.0);
         //given
-        SuperRobot superRobot = initRobotWithGivenLockers(locker1, locker2);
+        SuperLockerRobot superLockerRobot = initRobotWithGivenLockers(locker1, locker2);
         //when
-        RobotStoreCargoResult result = superRobot.storeCargo(ANY_CARGO);
+        RobotStoreCargoResult result = superLockerRobot.storeCargo(ANY_CARGO);
         //then
         assertFalse(result.isSuccess());
-        assertEquals("", result.getErrorMessage());
+        assertEquals(ROBOT_STORE_FAIL_MESSAGE, result.getErrorMessage());
     }
 
     @Test
@@ -83,11 +86,11 @@ public class SuperRobotTest {
         UserRobotAccessLocker locker = mock(UserRobotAccessLocker.class);
         when(locker.storeCargo()).thenReturn(storeSuccess(mockTicket, lockerBox));
         //given
-        SuperRobot superRobot = initRobotWithGivenLockers(locker);
-        RobotStoreCargoResult storeCargoResult = superRobot.storeCargo(ANY_CARGO);
+        SuperLockerRobot superLockerRobot = initRobotWithGivenLockers(locker);
+        RobotStoreCargoResult storeCargoResult = superLockerRobot.storeCargo(ANY_CARGO);
         String storeCargoTicket = storeCargoResult.getTicket();
         //when
-        RobotTakeoutCargoResult takeoutCargoResult = superRobot.takeOutCargo(storeCargoTicket);
+        RobotTakeoutCargoResult takeoutCargoResult = superLockerRobot.takeOutCargo(storeCargoTicket);
         //then
         assertTrue(takeoutCargoResult.isSuccess());
         assertEquals(ANY_CARGO, takeoutCargoResult.getCargo());
@@ -102,17 +105,17 @@ public class SuperRobotTest {
         UserRobotAccessLocker locker = mock(UserRobotAccessLocker.class);
         when(locker.storeCargo()).thenReturn(storeSuccess(mockTicket, lockerBox));
         //given
-        SuperRobot superRobot = initRobotWithGivenLockers(locker);
-        RobotStoreCargoResult result = superRobot.storeCargo(ANY_CARGO);
+        SuperLockerRobot superLockerRobot = initRobotWithGivenLockers(locker);
+        RobotStoreCargoResult result = superLockerRobot.storeCargo(ANY_CARGO);
         String differentTicket;
         do {
             differentTicket = UUID.randomUUID().toString();
         } while (differentTicket.equals(result.getTicket()));
         //when
-        RobotTakeoutCargoResult takeoutCargoResult = superRobot.takeOutCargo(differentTicket);
+        RobotTakeoutCargoResult takeoutCargoResult = superLockerRobot.takeOutCargo(differentTicket);
         //then
         assertFalse(takeoutCargoResult.isSuccess());
-        assertEquals(ANY_CARGO, takeoutCargoResult.getErrorMessage());
+        assertEquals(ROBOT_TAKE_OUT_FAIL_MESSAGE, takeoutCargoResult.getErrorMessage());
     }
 
     @Test
@@ -125,19 +128,19 @@ public class SuperRobotTest {
         when(locker.storeCargo()).thenReturn(storeSuccess(mockTicket, lockerBox));
         when(locker.takeOutCargo(anyString())).thenReturn(RobotTakeOutResult.takeOutFail(""));
         //given
-        SuperRobot superRobot = initRobotWithGivenLockers(locker);
-        RobotStoreCargoResult storeCargoResult = superRobot.storeCargo(ANY_CARGO);
+        SuperLockerRobot superLockerRobot = initRobotWithGivenLockers(locker);
+        RobotStoreCargoResult storeCargoResult = superLockerRobot.storeCargo(ANY_CARGO);
         String storeCargoTicket = storeCargoResult.getTicket();
         storeCargoResult.getLocker().takeOut(storeCargoTicket);
         //when
-        RobotTakeoutCargoResult takeoutCargoResult = superRobot.takeOutCargo(storeCargoTicket);
+        RobotTakeoutCargoResult takeoutCargoResult = superLockerRobot.takeOutCargo(storeCargoTicket);
         //then
         assertFalse(takeoutCargoResult.isSuccess());
-        assertEquals(ANY_CARGO, takeoutCargoResult.getErrorMessage());
+        assertEquals(ROBOT_TAKE_OUT_FAIL_MESSAGE, takeoutCargoResult.getErrorMessage());
     }
 
-    private SuperRobot initRobotWithGivenLockers(RobotAccessLocker... lockers) {
-        return new SuperRobot();
+    private SuperLockerRobot initRobotWithGivenLockers(RobotAccessLocker... lockers) {
+        return new SuperLockerRobot();
     }
 
 }

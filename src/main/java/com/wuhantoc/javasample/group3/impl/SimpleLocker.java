@@ -13,8 +13,8 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static com.wuhantoc.javasample.group3.TextConstant.FULL_LOCKER_MESSAGE;
-import static com.wuhantoc.javasample.group3.TextConstant.USE_TAKE_OUT_FAIL_MESSAGE;
+import static com.wuhantoc.javasample.group3.TextConstant.USER_STORE_FAIL_MESSAGE;
+import static com.wuhantoc.javasample.group3.TextConstant.USER_TAKE_OUT_FAIL_MESSAGE;
 import static com.wuhantoc.javasample.group3.UserStoreResult.storeFail;
 import static com.wuhantoc.javasample.group3.UserStoreResult.storeSuccess;
 
@@ -36,7 +36,7 @@ public class SimpleLocker implements UserAccessLocker {
     @Override
     public UserStoreResult store() {
         if (isFull()) {
-            return storeFail(FULL_LOCKER_MESSAGE);
+            return storeFail(USER_STORE_FAIL_MESSAGE);
         }
         String ticket = generateNonConflictingTicket();
         UserAccessLockerBox box = findAnyUnusedBox();
@@ -47,7 +47,7 @@ public class SimpleLocker implements UserAccessLocker {
     @Override
     public UserTakeOutResult takeOut(String ticket) {
         if (!ticketBoxMap.containsKey(ticket)) {
-            return UserTakeOutResult.takeOutFail(USE_TAKE_OUT_FAIL_MESSAGE);
+            return UserTakeOutResult.takeOutFail(USER_TAKE_OUT_FAIL_MESSAGE);
         }
         return UserTakeOutResult.takeOutSuccess(Objects.requireNonNull(ticketBoxMap.remove(ticket)));
     }
