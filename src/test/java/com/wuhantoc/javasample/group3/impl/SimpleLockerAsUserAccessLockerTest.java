@@ -2,11 +2,13 @@ package com.wuhantoc.javasample.group3.impl;
 
 import com.wuhantoc.javasample.group3.UserAccessLocker;
 import com.wuhantoc.javasample.group3.UserAccessLockerBox;
+import com.wuhantoc.javasample.group3.UserRobotAccessLockerBox;
 import com.wuhantoc.javasample.group3.UserStoreResult;
 import com.wuhantoc.javasample.group3.UserTakeOutResult;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
+import java.util.function.Supplier;
 
 import static com.wuhantoc.javasample.group3.TextConstant.USER_STORE_FAIL_MESSAGE;
 import static com.wuhantoc.javasample.group3.TextConstant.USER_TAKE_OUT_FAIL_MESSAGE;
@@ -15,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.platform.commons.util.StringUtils.isNotBlank;
+import static org.powermock.api.mockito.PowerMockito.mock;
 
 
 class SimpleLockerAsUserAccessLockerTest {
@@ -77,11 +80,19 @@ class SimpleLockerAsUserAccessLockerTest {
     }
 
     private UserAccessLocker initAvailableUserAccessLocker() {
-        return SimpleLocker.initLocker(1, SimpleLockerBox.supplier());
+        return SimpleLocker.initLocker(1, mockLockerBoxSupplier());
     }
 
     private UserAccessLocker initFullUserAccessLocker() {
-        return SimpleLocker.initLocker(0, SimpleLockerBox.supplier());
+        return SimpleLocker.initLocker(0, mockLockerBoxSupplier());
+    }
+
+    private Supplier<? extends UserRobotAccessLockerBox> mockLockerBoxSupplier() {
+        return this::mockLockerBox;
+    }
+
+    private UserRobotAccessLockerBox mockLockerBox() {
+        return mock(UserRobotAccessLockerBox.class);
     }
 
 }

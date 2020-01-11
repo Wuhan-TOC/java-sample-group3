@@ -1,7 +1,6 @@
 package com.wuhantoc.javasample.group3;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -15,26 +14,24 @@ import static com.wuhantoc.javasample.group3.TextConstant.ROBOT_TAKE_OUT_FAIL_ME
 
 public class SuperLockerRobot {
 
-    private final Collection<UserRobotAccessLocker> lockers;
+    private final Collection<UserSuperRobotAccessLocker> lockers;
 
-    private final Map<String, UserRobotAccessLocker> ticketLockerCache;
+    private final Map<String, UserSuperRobotAccessLocker> ticketLockerMap;
 
-    public SuperLockerRobot(Collection<UserRobotAccessLocker> lockers) {
+    public SuperLockerRobot(Collection<UserSuperRobotAccessLocker> lockers) {
         this.lockers = lockers;
-        ticketLockerCache = new HashMap<>();
+        ticketLockerMap = new HashMap<>();
     }
 
     public RobotStoreCargoResult storeCargo(Cargo cargo) {
-        Collection<UserRobotAccessLocker> sortedLockers = lockers.stream()
-                .filter(userRobotAccessLocker -> {
-                    return Double.compare(userRobotAccessLocker.getEmptyRate(),0)>0;
-                })
+        Collection<UserSuperRobotAccessLocker> sortedLockers = lockers.stream()
+                .filter(userRobotAccessLocker -> Double.compare(userRobotAccessLocker.getEmptyRate(), 0) > 0)
                 .sorted((locker1, locker2) -> Double.compare(locker2.getEmptyRate(), locker1.getEmptyRate()))
                 .collect(Collectors.toList());
-        for (UserRobotAccessLocker locker : sortedLockers) {
+        for (UserSuperRobotAccessLocker locker : sortedLockers) {
             RobotStoreResult storeResult = locker.storeCargo();
             if (storeResult.isSuccess()) {
-                ticketLockerCache.put(storeResult.getTicket(), locker);
+                ticketLockerMap.put(storeResult.getTicket(), locker);
                 storeResult.getLockerBox().store(cargo);
                 return storeCargoSuccess(storeResult.getTicket(), locker);
             }
@@ -43,8 +40,8 @@ public class SuperLockerRobot {
     }
 
     public RobotTakeoutCargoResult takeOutCargo(String ticket) {
-        if (ticketLockerCache.containsKey(ticket)) {
-            UserRobotAccessLocker locker = ticketLockerCache.remove(ticket);
+        if (ticketLockerMap.containsKey(ticket)) {
+            UserRobotAccessLocker locker = ticketLockerMap.remove(ticket);
             RobotTakeOutResult takeOutResult = locker.takeOutCargo(ticket);
             if (takeOutResult.isSuccess()) {
                 return takeOutSuccess(takeOutResult.getLockerBox().get());

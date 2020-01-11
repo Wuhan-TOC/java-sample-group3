@@ -1,8 +1,10 @@
 package com.wuhantoc.javasample.group3.impl;
 
-import com.wuhantoc.javasample.group3.UserAccessLocker;
-import com.wuhantoc.javasample.group3.UserAccessLockerBox;
+import com.wuhantoc.javasample.group3.RobotStoreResult;
+import com.wuhantoc.javasample.group3.RobotTakeOutResult;
+import com.wuhantoc.javasample.group3.UserRobotAccessLockerBox;
 import com.wuhantoc.javasample.group3.UserStoreResult;
+import com.wuhantoc.javasample.group3.UserSuperRobotAccessLocker;
 import com.wuhantoc.javasample.group3.UserTakeOutResult;
 
 import java.util.ConcurrentModificationException;
@@ -18,18 +20,18 @@ import static com.wuhantoc.javasample.group3.TextConstant.USER_TAKE_OUT_FAIL_MES
 import static com.wuhantoc.javasample.group3.UserStoreResult.storeFail;
 import static com.wuhantoc.javasample.group3.UserStoreResult.storeSuccess;
 
-public class SimpleLocker implements UserAccessLocker {
+public class SimpleLocker implements UserSuperRobotAccessLocker {
 
-    private final UserAccessLockerBox[] boxes;
-    private final Map<String, UserAccessLockerBox> ticketBoxMap;
+    private final UserRobotAccessLockerBox[] boxes;
+    private final Map<String, UserRobotAccessLockerBox> ticketBoxMap;
 
-    private SimpleLocker(int capacity, Supplier<? extends UserAccessLockerBox> lockerBoxSupplier) {
-        boxes = new SimpleLockerBox[capacity];
+    private SimpleLocker(int capacity, Supplier<? extends UserRobotAccessLockerBox> lockerBoxSupplier) {
+        boxes = new UserRobotAccessLockerBox[capacity];
         initBoxesWith(lockerBoxSupplier);
         ticketBoxMap = new HashMap<>(capacity);
     }
 
-    public static UserAccessLocker initLocker(int capacity, Supplier<? extends UserAccessLockerBox> lockerBoxSupplier) {
+    public static UserSuperRobotAccessLocker initLocker(int capacity, Supplier<? extends UserRobotAccessLockerBox> lockerBoxSupplier) {
         return new SimpleLocker(capacity, lockerBoxSupplier);
     }
 
@@ -39,7 +41,7 @@ public class SimpleLocker implements UserAccessLocker {
             return storeFail(USER_STORE_FAIL_MESSAGE);
         }
         String ticket = generateNonConflictingTicket();
-        UserAccessLockerBox box = findAnyUnusedBox();
+        UserRobotAccessLockerBox box = findAnyUnusedBox();
         ticketBoxMap.put(ticket, box);
         return storeSuccess(ticket, box);
     }
@@ -49,10 +51,39 @@ public class SimpleLocker implements UserAccessLocker {
         if (!ticketBoxMap.containsKey(ticket)) {
             return UserTakeOutResult.takeOutFail(USER_TAKE_OUT_FAIL_MESSAGE);
         }
-        return UserTakeOutResult.takeOutSuccess(Objects.requireNonNull(ticketBoxMap.remove(ticket)));
+        UserRobotAccessLockerBox lockerBox = ticketBoxMap.remove(ticket);
+        Objects.requireNonNull(lockerBox).get();
+        return UserTakeOutResult.takeOutSuccess(lockerBox);
     }
 
-    private void initBoxesWith(Supplier<? extends UserAccessLockerBox> lockerBoxSupplier) {
+    @Override
+    public RobotStoreResult storeCargo() {
+        if (isFull()) {
+            return RobotStoreResult.storeFail(USER_STORE_FAIL_MESSAGE);
+        }
+        String ticket = generateNonConflictingTicket();
+        UserRobotAccessLockerBox box = findAnyUnusedBox();
+        ticketBoxMap.put(ticket, box);
+        return RobotStoreResult.storeSuccess(ticket, box);
+    }
+
+    @Override
+    public RobotTakeOutResult takeOutCargo(String ticket) {
+        if (!ticketBoxMap.containsKey(ticket)) {
+            return RobotTakeOutResult.takeOutFail(USER_TAKE_OUT_FAIL_MESSAGE);
+        }
+        return RobotTakeOutResult.takeOutSuccess(Objects.requireNonNull(ticketBoxMap.remove(ticket)));
+    }
+
+    @Override
+    public double getEmptyRate() {
+        if (boxes.length == 0) {
+            return 0;
+        }
+        return (boxes.length - ticketBoxMap.size()) / (double) boxes.length;
+    }
+
+    private void initBoxesWith(Supplier<? extends UserRobotAccessLockerBox> lockerBoxSupplier) {
         for (int i = 0; i < boxes.length; i++) {
             boxes[i] = lockerBoxSupplier.get();
         }
@@ -62,7 +93,7 @@ public class SimpleLocker implements UserAccessLocker {
         return ticketBoxMap.size() == boxes.length;
     }
 
-    private UserAccessLockerBox findAnyUnusedBox() {
+    private UserRobotAccessLockerBox findAnyUnusedBox() {
         return Stream.of(boxes)
                 .filter(lockerBox -> !ticketBoxMap.containsValue(lockerBox))
                 .findAny()
@@ -80,5 +111,4 @@ public class SimpleLocker implements UserAccessLocker {
     private String generateTicket() {
         return UUID.randomUUID().toString();
     }
-
 }

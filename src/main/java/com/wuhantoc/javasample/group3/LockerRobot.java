@@ -14,18 +14,18 @@ public class LockerRobot {
 
     private final Iterable<UserRobotAccessLocker> lockers;
 
-    private final Map<String, UserRobotAccessLocker> ticketLockerCache;
+    private final Map<String, UserRobotAccessLocker> ticketLockerMap;
 
     public LockerRobot(Iterable<UserRobotAccessLocker> lockers) {
         this.lockers = lockers;
-        ticketLockerCache = new HashMap<>();
+        ticketLockerMap = new HashMap<>();
     }
 
     public RobotStoreCargoResult storeCargo(Cargo cargo) {
         for (UserRobotAccessLocker locker : lockers) {
             RobotStoreResult storeResult = locker.storeCargo();
             if (storeResult.isSuccess()) {
-                ticketLockerCache.put(storeResult.getTicket(), locker);
+                ticketLockerMap.put(storeResult.getTicket(), locker);
                 storeResult.getLockerBox().store(cargo);
                 return storeCargoSuccess(storeResult.getTicket(), locker);
             }
@@ -34,8 +34,8 @@ public class LockerRobot {
     }
 
     public RobotTakeoutCargoResult takeOutCargo(String ticket) {
-        if (ticketLockerCache.containsKey(ticket)) {
-            UserRobotAccessLocker locker = ticketLockerCache.remove(ticket);
+        if (ticketLockerMap.containsKey(ticket)) {
+            UserRobotAccessLocker locker = ticketLockerMap.remove(ticket);
             RobotTakeOutResult takeOutResult = locker.takeOutCargo(ticket);
             if (takeOutResult.isSuccess()) {
                 return takeOutSuccess(takeOutResult.getLockerBox().get());

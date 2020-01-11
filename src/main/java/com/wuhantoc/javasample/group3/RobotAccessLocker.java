@@ -6,6 +6,4 @@ public interface RobotAccessLocker  {
 
     RobotTakeOutResult takeOutCargo(String ticket);
 
-    double getEmptyRate();
-
 }
