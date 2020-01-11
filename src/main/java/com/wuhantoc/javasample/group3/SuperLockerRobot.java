@@ -1,7 +1,9 @@
 package com.wuhantoc.javasample.group3;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.wuhantoc.javasample.group3.RobotStoreCargoResult.storeCargoFail;
 import static com.wuhantoc.javasample.group3.RobotStoreCargoResult.storeCargoSuccess;
@@ -10,19 +12,23 @@ import static com.wuhantoc.javasample.group3.RobotTakeoutCargoResult.takeOutSucc
 import static com.wuhantoc.javasample.group3.TextConstant.ROBOT_STORE_FAIL_MESSAGE;
 import static com.wuhantoc.javasample.group3.TextConstant.ROBOT_TAKE_OUT_FAIL_MESSAGE;
 
-public class LockerRobot {
+public class SuperLockerRobot {
 
-    private final Iterable<UserRobotAccessLocker> lockers;
+    private final Collection<UserSuperRobotAccessLocker> lockers;
 
-    private final Map<String, UserRobotAccessLocker> ticketLockerMap;
+    private final Map<String, UserSuperRobotAccessLocker> ticketLockerMap;
 
-    public LockerRobot(Iterable<UserRobotAccessLocker> lockers) {
+    public SuperLockerRobot(Collection<UserSuperRobotAccessLocker> lockers) {
         this.lockers = lockers;
         ticketLockerMap = new HashMap<>();
     }
 
     public RobotStoreCargoResult storeCargo(Cargo cargo) {
-        for (UserRobotAccessLocker locker : lockers) {
+        Collection<UserSuperRobotAccessLocker> sortedLockers = lockers.stream()
+                .filter(userRobotAccessLocker -> Double.compare(userRobotAccessLocker.getEmptyRate(), 0) > 0)
+                .sorted((locker1, locker2) -> Double.compare(locker2.getEmptyRate(), locker1.getEmptyRate()))
+                .collect(Collectors.toList());
+        for (UserSuperRobotAccessLocker locker : sortedLockers) {
             RobotStoreResult storeResult = locker.storeCargo();
             if (storeResult.isSuccess()) {
                 ticketLockerMap.put(storeResult.getTicket(), locker);
