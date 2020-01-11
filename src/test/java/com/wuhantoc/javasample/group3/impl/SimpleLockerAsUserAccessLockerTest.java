@@ -27,7 +27,7 @@ class SimpleLockerAsUserAccessLockerTest {
         //given
         UserAccessLocker locker = initAvailableUserAccessLocker();
         //when
-        UserStoreResult result = locker.store();
+        UserStoreResult result = locker.userStore();
         //then
         assertNotNull(result);
         assertTrue(result.isSuccess());
@@ -40,7 +40,7 @@ class SimpleLockerAsUserAccessLockerTest {
         //given
         UserAccessLocker locker = initFullUserAccessLocker();
         //when
-        UserStoreResult result = locker.store();
+        UserStoreResult result = locker.userStore();
         //then
         assertNotNull(result);
         assertFalse(result.isSuccess());
@@ -51,11 +51,11 @@ class SimpleLockerAsUserAccessLockerTest {
     void should_get_a_success_result_with_the_same_locker_box_when_take_out_given_ticket_acquire_from_store() {
         //given
         UserAccessLocker locker = initAvailableUserAccessLocker();
-        UserStoreResult storeResult = locker.store();
+        UserStoreResult storeResult = locker.userStore();
         String ticket = storeResult.getTicket();
         UserAccessLockerBox boxWhenStoring = storeResult.getLockerBox();
         //when
-        UserTakeOutResult takeOutResult = locker.takeOut(ticket);
+        UserTakeOutResult takeOutResult = locker.userTakeOut(ticket);
         //then
         assertNotNull(takeOutResult);
         assertTrue(takeOutResult.isSuccess());
@@ -66,13 +66,13 @@ class SimpleLockerAsUserAccessLockerTest {
     void should_get_a_not_success_result_and_specified_error_message_when_take_out_given_ticket_different_from_any_ticket_from_store_result() {
         //given
         UserAccessLocker locker = initAvailableUserAccessLocker();
-        UserStoreResult result = locker.store();
+        UserStoreResult result = locker.userStore();
         String differentTicket;
         do {
             differentTicket = UUID.randomUUID().toString();
         } while (differentTicket.equals(result.getTicket()));
         //when
-        UserTakeOutResult takeOutResult = locker.takeOut(differentTicket);
+        UserTakeOutResult takeOutResult = locker.userTakeOut(differentTicket);
         //then
         assertNotNull(takeOutResult);
         assertFalse(takeOutResult.isSuccess());

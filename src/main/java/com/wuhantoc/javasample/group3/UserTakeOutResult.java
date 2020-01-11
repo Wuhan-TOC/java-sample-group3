@@ -17,11 +17,11 @@ public class UserTakeOutResult {
 
     private final String errorMessage;
 
-    public static UserTakeOutResult takeOutSuccess(UserAccessLockerBox lockerBox) {
+    public static UserTakeOutResult userTakeOutSuccess(UserAccessLockerBox lockerBox) {
         return builder().success(true).lockerBox(Objects.requireNonNull(lockerBox)).build();
     }
 
-    public static UserTakeOutResult takeOutFail(String reason) {
+    public static UserTakeOutResult userTakeOutFail(String reason) {
         return builder().success(false).errorMessage(reason).build();
     }
 

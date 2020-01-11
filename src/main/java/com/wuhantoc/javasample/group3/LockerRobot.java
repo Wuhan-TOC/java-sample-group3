@@ -1,47 +1,26 @@
 package com.wuhantoc.javasample.group3;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collection;
 
-import static com.wuhantoc.javasample.group3.RobotStoreCargoResult.storeCargoFail;
-import static com.wuhantoc.javasample.group3.RobotStoreCargoResult.storeCargoSuccess;
-import static com.wuhantoc.javasample.group3.RobotTakeoutCargoResult.takeOutFail;
-import static com.wuhantoc.javasample.group3.RobotTakeoutCargoResult.takeOutSuccess;
-import static com.wuhantoc.javasample.group3.TextConstant.ROBOT_STORE_FAIL_MESSAGE;
-import static com.wuhantoc.javasample.group3.TextConstant.ROBOT_TAKE_OUT_FAIL_MESSAGE;
+public class LockerRobot extends AbstractLockerRobot {
 
-public class LockerRobot {
-
-    private final Iterable<UserRobotAccessLocker> lockers;
-
-    private final Map<String, UserRobotAccessLocker> ticketLockerMap;
-
-    public LockerRobot(Iterable<UserRobotAccessLocker> lockers) {
-        this.lockers = lockers;
-        ticketLockerMap = new HashMap<>();
+    public LockerRobot(Collection<UserRobotAccessLocker> lockers) {
+        super(lockers);
     }
 
+    @Override
     public RobotStoreCargoResult storeCargo(Cargo cargo) {
-        for (UserRobotAccessLocker locker : lockers) {
-            RobotStoreResult storeResult = locker.storeCargo();
-            if (storeResult.isSuccess()) {
-                ticketLockerMap.put(storeResult.getTicket(), locker);
-                storeResult.getLockerBox().store(cargo);
-                return storeCargoSuccess(storeResult.getTicket(), locker);
-            }
-        }
-        return storeCargoFail(ROBOT_STORE_FAIL_MESSAGE);
+        return super.storeCargo(cargo);
     }
 
-    public RobotTakeoutCargoResult takeOutCargo(String ticket) {
-        if (ticketLockerMap.containsKey(ticket)) {
-            UserRobotAccessLocker locker = ticketLockerMap.remove(ticket);
-            RobotTakeOutResult takeOutResult = locker.takeOutCargo(ticket);
-            if (takeOutResult.isSuccess()) {
-                return takeOutSuccess(takeOutResult.getLockerBox().get());
-            }
-        }
-        return takeOutFail(ROBOT_TAKE_OUT_FAIL_MESSAGE);
+    @Override
+    public RobotTakeOutCargoResult takeOutCargo(String ticket) {
+        return super.takeOutCargo(ticket);
+    }
+
+    @Override
+    protected Collection<UserRobotAccessLocker> sortLockersBeforeStore(Collection<UserRobotAccessLocker> lockers) {
+        return lockers;
     }
 
 }

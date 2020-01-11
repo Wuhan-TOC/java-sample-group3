@@ -16,11 +16,11 @@ public class UserStoreResult {
 
     private final String errorMessage;
 
-    public static UserStoreResult storeSuccess(String ticket, UserAccessLockerBox lockerBox) {
+    public static UserStoreResult userStoreSuccess(String ticket, UserAccessLockerBox lockerBox) {
         return builder().success(true).ticket(ticket).lockerBox(lockerBox).build();
     }
 
-    public static UserStoreResult storeFail(String reason) {
+    public static UserStoreResult userStoreFail(String reason) {
         return builder().success(false).errorMessage(reason).build();
     }
 

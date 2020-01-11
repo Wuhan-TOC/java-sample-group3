@@ -6,6 +6,8 @@ import com.wuhantoc.javasample.group3.UserRobotAccessLockerBox;
 import com.wuhantoc.javasample.group3.UserStoreResult;
 import com.wuhantoc.javasample.group3.UserSuperRobotAccessLocker;
 import com.wuhantoc.javasample.group3.UserTakeOutResult;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
@@ -15,10 +17,18 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static com.wuhantoc.javasample.group3.RobotStoreResult.robotStoreFail;
+import static com.wuhantoc.javasample.group3.RobotStoreResult.robotStoreSuccess;
+import static com.wuhantoc.javasample.group3.RobotTakeOutResult.robotTakeOutFail;
+import static com.wuhantoc.javasample.group3.RobotTakeOutResult.robotTakeOutSuccess;
+import static com.wuhantoc.javasample.group3.TextConstant.ROBOT_STORE_FAIL_MESSAGE;
+import static com.wuhantoc.javasample.group3.TextConstant.ROBOT_TAKE_OUT_FAIL_MESSAGE;
 import static com.wuhantoc.javasample.group3.TextConstant.USER_STORE_FAIL_MESSAGE;
 import static com.wuhantoc.javasample.group3.TextConstant.USER_TAKE_OUT_FAIL_MESSAGE;
-import static com.wuhantoc.javasample.group3.UserStoreResult.storeFail;
-import static com.wuhantoc.javasample.group3.UserStoreResult.storeSuccess;
+import static com.wuhantoc.javasample.group3.UserStoreResult.userStoreFail;
+import static com.wuhantoc.javasample.group3.UserStoreResult.userStoreSuccess;
+import static com.wuhantoc.javasample.group3.UserTakeOutResult.userTakeOutFail;
+import static com.wuhantoc.javasample.group3.UserTakeOutResult.userTakeOutSuccess;
 
 public class SimpleLocker implements UserSuperRobotAccessLocker {
 
@@ -36,43 +46,40 @@ public class SimpleLocker implements UserSuperRobotAccessLocker {
     }
 
     @Override
-    public UserStoreResult store() {
-        if (isFull()) {
-            return storeFail(USER_STORE_FAIL_MESSAGE);
+    public UserStoreResult userStore() {
+        InnerStoreResult storeResult = store();
+        if (storeResult == null) {
+            return userStoreFail(USER_STORE_FAIL_MESSAGE);
         }
-        String ticket = generateNonConflictingTicket();
-        UserRobotAccessLockerBox box = findAnyUnusedBox();
-        ticketBoxMap.put(ticket, box);
-        return storeSuccess(ticket, box);
+        return userStoreSuccess(storeResult.ticket, storeResult.lockerBox);
     }
 
     @Override
-    public UserTakeOutResult takeOut(String ticket) {
-        if (!ticketBoxMap.containsKey(ticket)) {
-            return UserTakeOutResult.takeOutFail(USER_TAKE_OUT_FAIL_MESSAGE);
+    public UserTakeOutResult userTakeOut(String ticket) {
+        UserRobotAccessLockerBox lockerBox = takeOut(ticket);
+        if (lockerBox == null) {
+            return userTakeOutFail(USER_TAKE_OUT_FAIL_MESSAGE);
         }
-        UserRobotAccessLockerBox lockerBox = ticketBoxMap.remove(ticket);
-        Objects.requireNonNull(lockerBox).get();
-        return UserTakeOutResult.takeOutSuccess(lockerBox);
+        lockerBox.get();
+        return userTakeOutSuccess(lockerBox);
     }
 
     @Override
-    public RobotStoreResult storeCargo() {
-        if (isFull()) {
-            return RobotStoreResult.storeFail(USER_STORE_FAIL_MESSAGE);
+    public RobotStoreResult robotStore() {
+        InnerStoreResult storeResult = store();
+        if (storeResult == null) {
+            return robotStoreFail(ROBOT_STORE_FAIL_MESSAGE);
         }
-        String ticket = generateNonConflictingTicket();
-        UserRobotAccessLockerBox box = findAnyUnusedBox();
-        ticketBoxMap.put(ticket, box);
-        return RobotStoreResult.storeSuccess(ticket, box);
+        return robotStoreSuccess(storeResult.ticket, storeResult.lockerBox);
     }
 
     @Override
-    public RobotTakeOutResult takeOutCargo(String ticket) {
-        if (!ticketBoxMap.containsKey(ticket)) {
-            return RobotTakeOutResult.takeOutFail(USER_TAKE_OUT_FAIL_MESSAGE);
+    public RobotTakeOutResult robotTakeOut(String ticket) {
+        UserRobotAccessLockerBox lockerBox = takeOut(ticket);
+        if (lockerBox == null) {
+            return robotTakeOutFail(ROBOT_TAKE_OUT_FAIL_MESSAGE);
         }
-        return RobotTakeOutResult.takeOutSuccess(Objects.requireNonNull(ticketBoxMap.remove(ticket)));
+        return robotTakeOutSuccess(lockerBox);
     }
 
     @Override
@@ -87,6 +94,23 @@ public class SimpleLocker implements UserSuperRobotAccessLocker {
         for (int i = 0; i < boxes.length; i++) {
             boxes[i] = lockerBoxSupplier.get();
         }
+    }
+
+    private InnerStoreResult store() {
+        if (isFull()) {
+            return null;
+        }
+        String ticket = generateNonConflictingTicket();
+        UserRobotAccessLockerBox box = findAnyUnusedBox();
+        ticketBoxMap.put(ticket, box);
+        return new InnerStoreResult(ticket, box);
+    }
+
+    private UserRobotAccessLockerBox takeOut(String ticket) {
+        if (!ticketBoxMap.containsKey(ticket)) {
+            return null;
+        }
+        return Objects.requireNonNull(ticketBoxMap.remove(ticket));
     }
 
     private boolean isFull() {
@@ -111,4 +135,11 @@ public class SimpleLocker implements UserSuperRobotAccessLocker {
     private String generateTicket() {
         return UUID.randomUUID().toString();
     }
+
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class InnerStoreResult {
+        String ticket;
+        UserRobotAccessLockerBox lockerBox;
+    }
+
 }

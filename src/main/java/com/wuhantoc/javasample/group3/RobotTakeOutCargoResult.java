@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
-public class RobotTakeoutCargoResult {
+public class RobotTakeOutCargoResult {
 
     private final boolean success;
 
@@ -16,11 +16,11 @@ public class RobotTakeoutCargoResult {
 
     private final String errorMessage;
 
-    public static RobotTakeoutCargoResult takeOutSuccess(Cargo cargo) {
+    public static RobotTakeOutCargoResult takeOutSuccess(Cargo cargo) {
         return builder().success(true).cargo(Objects.requireNonNull(cargo)).build();
     }
 
-    public static RobotTakeoutCargoResult takeOutFail(String reason) {
+    public static RobotTakeOutCargoResult takeOutFail(String reason) {
         return builder().success(false).errorMessage(reason).build();
     }
 

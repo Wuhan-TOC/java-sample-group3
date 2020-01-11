@@ -2,8 +2,8 @@ package com.wuhantoc.javasample.group3;
 
 public interface UserAccessLocker {
 
-    UserStoreResult store();
+    UserStoreResult userStore();
 
-    UserTakeOutResult takeOut(String ticket);
+    UserTakeOutResult userTakeOut(String ticket);
 
 }

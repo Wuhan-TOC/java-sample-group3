@@ -16,11 +16,11 @@ public class RobotStoreResult {
 
     private final String errorMessage;
 
-    public static RobotStoreResult storeSuccess(String ticket, RobotAccessLockerBox lockerBox) {
+    public static RobotStoreResult robotStoreSuccess(String ticket, RobotAccessLockerBox lockerBox) {
         return builder().success(true).ticket(ticket).lockerBox(lockerBox).build();
     }
 
-    public static RobotStoreResult storeFail(String reason) {
+    public static RobotStoreResult robotStoreFail(String reason) {
         return builder().success(false).errorMessage(reason).build();
     }
 

@@ -2,8 +2,8 @@ package com.wuhantoc.javasample.group3;
 
 public interface RobotAccessLocker  {
 
-    RobotStoreResult storeCargo();
+    RobotStoreResult robotStore();
 
-    RobotTakeOutResult takeOutCargo(String ticket);
+    RobotTakeOutResult robotTakeOut(String ticket);
 
 }

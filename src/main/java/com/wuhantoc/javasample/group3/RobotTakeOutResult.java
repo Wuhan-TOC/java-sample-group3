@@ -17,11 +17,11 @@ public class RobotTakeOutResult {
 
     private final String errorMessage;
 
-    public static RobotTakeOutResult takeOutSuccess(RobotAccessLockerBox lockerBox) {
+    public static RobotTakeOutResult robotTakeOutSuccess(RobotAccessLockerBox lockerBox) {
         return builder().success(true).lockerBox(Objects.requireNonNull(lockerBox)).build();
     }
 
-    public static RobotTakeOutResult takeOutFail(String reason) {
+    public static RobotTakeOutResult robotTakeOutFail(String reason) {
         return builder().success(false).errorMessage(reason).build();
     }
 
