@@ -3,11 +3,16 @@ package com.wuhantoc.javasample.group3;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.extension.TestInstanceFactoryContext;
+import org.junit.jupiter.api.extension.TestInstantiationException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -18,6 +23,7 @@ import static com.wuhantoc.javasample.group3.UserStoreResult.userStoreSuccess;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.platform.commons.util.ReflectionUtils.makeAccessible;
 import static org.junit.platform.commons.util.StringUtils.isNotBlank;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -28,14 +34,14 @@ public abstract class UserAccessLockerTest {
     private static final boolean FULL_LOCKER = true;
     private static final boolean AVAILABLE_LOCKER = false;
 
-    protected Function<Boolean, UserAccessLocker> lockerProvider;
+    private BiFunction<Boolean, Supplier<UserRobotAccessLockerBox>, UserAccessLocker> lockerProvider;
 
     @DisplayName("when_user_store")
     @ParameterizedTest(name = "{1}")
     @MethodSource("initUserStoreArgs")
     public void should_match_expected_result_when_user_store_given_provided_locker(Boolean fullLocker, UserStoreResult expectedResult) {
         //given
-        UserAccessLocker locker = lockerProvider.apply(fullLocker);
+        UserAccessLocker locker = lockerProvider.apply(fullLocker, lockerBoxSupplier());
         //when
         UserStoreResult result = locker.userStore();
         //then
@@ -53,7 +59,7 @@ public abstract class UserAccessLockerTest {
     @ParameterizedTest(name = "{2}")
     @MethodSource("initUserTakeOutArgs")
     public void should_match_expected_result_when_user_take_out_given_provided_locker(Boolean fullLocker, Function<UserAccessLocker, UserStoreResult> storeResultProvider, UserTakeOutResult expectedResult) {
-        UserAccessLocker locker = lockerProvider.apply(fullLocker);
+        UserAccessLocker locker = lockerProvider.apply(fullLocker, lockerBoxSupplier());
         UserStoreResult storeResult = storeResultProvider.apply(locker);
         String ticketToTakeOut = storeResult.getTicket();
         //when
@@ -69,6 +75,19 @@ public abstract class UserAccessLockerTest {
         }
     }
 
+    protected static Object newInstance(TestInstanceFactoryContext factoryContext, BiFunction<Boolean, Supplier<UserRobotAccessLockerBox>, UserAccessLocker> lockerProvider){
+        try {
+            Constructor<?> constructor = factoryContext.getTestClass().getDeclaredConstructor(BiFunction.class);
+            return makeAccessible(constructor).newInstance(lockerProvider);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new TestInstantiationException("create test instance for UserSuperRobotLockerWithCustomDigitTicket failed", e);
+        }
+    }
+
+    protected Supplier<UserRobotAccessLockerBox> lockerBoxSupplier() {
+        return () -> mock(UserRobotAccessLockerBox.class);
+    }
+
     private static Stream<Arguments> initUserStoreArgs() {
         return Stream.of(
                 givenAvailableLockerThenSuccess(),
@@ -76,7 +95,7 @@ public abstract class UserAccessLockerTest {
         );
     }
 
-    static Stream<Arguments> initUserTakeOutArgs() {
+    private static Stream<Arguments> initUserTakeOutArgs() {
         return Stream.of(
                 givenCorrectTicketThenSuccess(),
                 givenIncorrectTicketThenNotSuccess()
@@ -136,10 +155,6 @@ public abstract class UserAccessLockerTest {
         when(result.isSuccess()).thenReturn(success);
         when(result.toString()).thenReturn(caseName);
         return result;
-    }
-
-    protected static Supplier<UserRobotAccessLockerBox> mockLockerBoxSupplier() {
-        return () -> mock(UserRobotAccessLockerBox.class);
     }
 
 }
