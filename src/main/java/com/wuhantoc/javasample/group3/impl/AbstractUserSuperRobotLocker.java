@@ -6,16 +6,8 @@ import com.wuhantoc.javasample.group3.UserRobotAccessLockerBox;
 import com.wuhantoc.javasample.group3.UserStoreResult;
 import com.wuhantoc.javasample.group3.UserSuperRobotAccessLocker;
 import com.wuhantoc.javasample.group3.UserTakeOutResult;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 
-import java.util.ConcurrentModificationException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import static com.wuhantoc.javasample.group3.RobotStoreResult.robotStoreFail;
 import static com.wuhantoc.javasample.group3.RobotStoreResult.robotStoreSuccess;
@@ -30,19 +22,10 @@ import static com.wuhantoc.javasample.group3.UserStoreResult.userStoreSuccess;
 import static com.wuhantoc.javasample.group3.UserTakeOutResult.userTakeOutFail;
 import static com.wuhantoc.javasample.group3.UserTakeOutResult.userTakeOutSuccess;
 
-public class SimpleLocker implements UserSuperRobotAccessLocker {
+abstract class AbstractUserSuperRobotLocker extends AbstractLocker<UserRobotAccessLockerBox> implements UserSuperRobotAccessLocker {
 
-    private final UserRobotAccessLockerBox[] boxes;
-    private final Map<String, UserRobotAccessLockerBox> ticketBoxMap;
-
-    private SimpleLocker(int capacity, Supplier<? extends UserRobotAccessLockerBox> lockerBoxSupplier) {
-        boxes = new UserRobotAccessLockerBox[capacity];
-        initBoxesWith(lockerBoxSupplier);
-        ticketBoxMap = new HashMap<>(capacity);
-    }
-
-    public static UserSuperRobotAccessLocker initLocker(int capacity, Supplier<? extends UserRobotAccessLockerBox> lockerBoxSupplier) {
-        return new SimpleLocker(capacity, lockerBoxSupplier);
+    protected AbstractUserSuperRobotLocker(int capacity, Supplier<UserRobotAccessLockerBox> lockerBoxSupplier) {
+        super(capacity, lockerBoxSupplier, UserRobotAccessLockerBox.class);
     }
 
     @Override
@@ -84,62 +67,10 @@ public class SimpleLocker implements UserSuperRobotAccessLocker {
 
     @Override
     public double getEmptyRate() {
-        if (boxes.length == 0) {
+        if (getCapacity() == 0) {
             return 0;
         }
-        return (boxes.length - ticketBoxMap.size()) / (double) boxes.length;
-    }
-
-    private void initBoxesWith(Supplier<? extends UserRobotAccessLockerBox> lockerBoxSupplier) {
-        for (int i = 0; i < boxes.length; i++) {
-            boxes[i] = lockerBoxSupplier.get();
-        }
-    }
-
-    private InnerStoreResult store() {
-        if (isFull()) {
-            return null;
-        }
-        String ticket = generateNonConflictingTicket();
-        UserRobotAccessLockerBox box = findAnyUnusedBox();
-        ticketBoxMap.put(ticket, box);
-        return new InnerStoreResult(ticket, box);
-    }
-
-    private UserRobotAccessLockerBox takeOut(String ticket) {
-        if (!ticketBoxMap.containsKey(ticket)) {
-            return null;
-        }
-        return Objects.requireNonNull(ticketBoxMap.remove(ticket));
-    }
-
-    private boolean isFull() {
-        return ticketBoxMap.size() == boxes.length;
-    }
-
-    private UserRobotAccessLockerBox findAnyUnusedBox() {
-        return Stream.of(boxes)
-                .filter(lockerBox -> !ticketBoxMap.containsValue(lockerBox))
-                .findAny()
-                .orElseThrow(ConcurrentModificationException::new);
-    }
-
-    private String generateNonConflictingTicket() {
-        String ticket;
-        do {
-            ticket = generateTicket();
-        } while (ticketBoxMap.containsKey(ticket));
-        return ticket;
-    }
-
-    private String generateTicket() {
-        return UUID.randomUUID().toString();
-    }
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class InnerStoreResult {
-        String ticket;
-        UserRobotAccessLockerBox lockerBox;
+        return (getCapacity() - getSize()) / (double) getCapacity();
     }
 
 }
