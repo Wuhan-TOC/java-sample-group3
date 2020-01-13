@@ -10,7 +10,7 @@ public final class TextConstant {
 
     public static final String ROBOT_TAKE_OUT_FAIL_MESSAGE = "Fail to find any box with given ticket";
 
-    private TextConstant(){
+    private TextConstant() {
         super();
     }
 

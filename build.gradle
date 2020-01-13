@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.2.2.RELEASE'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
     id 'java'
+    id 'idea'
 }
 
 group = 'com.wuhantoc'
@@ -16,6 +17,15 @@ sourceSets {
             srcDir file('src/integration-test/java')
         }
         resources.srcDir file('src/integration-test/resources')
+    }
+}
+
+idea {
+    module {
+        sourceDirs -= sourceSets.integrationTest.java.srcDirs
+        sourceDirs -= sourceSets.integrationTest.resources.srcDirs
+        testSourceDirs += sourceSets.integrationTest.java.srcDirs
+        testSourceDirs += sourceSets.integrationTest.resources.srcDirs
     }
 }
 

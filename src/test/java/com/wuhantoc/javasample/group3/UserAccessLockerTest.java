@@ -75,7 +75,7 @@ public abstract class UserAccessLockerTest {
         }
     }
 
-    protected static Object newInstance(TestInstanceFactoryContext factoryContext, BiFunction<Boolean, Supplier<UserRobotAccessLockerBox>, UserAccessLocker> lockerProvider){
+    protected static Object newInstance(TestInstanceFactoryContext factoryContext, BiFunction<Boolean, Supplier<UserRobotAccessLockerBox>, UserAccessLocker> lockerProvider) {
         try {
             Constructor<?> constructor = factoryContext.getTestClass().getDeclaredConstructor(BiFunction.class);
             return makeAccessible(constructor).newInstance(lockerProvider);

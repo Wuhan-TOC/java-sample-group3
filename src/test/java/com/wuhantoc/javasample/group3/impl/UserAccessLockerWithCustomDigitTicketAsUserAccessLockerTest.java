@@ -12,10 +12,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstanceFactory;
 import org.junit.jupiter.api.extension.TestInstanceFactoryContext;
 import org.junit.jupiter.api.extension.TestInstantiationException;
-import org.junit.platform.commons.util.ReflectionUtils;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -23,7 +20,6 @@ import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.platform.commons.util.ReflectionUtils.makeAccessible;
 
 @ExtendWith(UserAccessLockerWithCustomDigitTicketAsUserAccessLockerTest.LockerTestInstanceFactory.class)
 public class UserAccessLockerWithCustomDigitTicketAsUserAccessLockerTest extends UserAccessLockerTest {
@@ -69,7 +65,7 @@ public class UserAccessLockerWithCustomDigitTicketAsUserAccessLockerTest extends
                 }
                 return initAvailableLocker(1, 4, lockerBoxSupplier);
             };
-            return newInstance(factoryContext,lockerProvider);
+            return newInstance(factoryContext, lockerProvider);
         }
 
     }

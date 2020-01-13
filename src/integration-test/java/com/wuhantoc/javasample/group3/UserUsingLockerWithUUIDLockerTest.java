@@ -1,19 +1,11 @@
 package com.wuhantoc.javasample.group3;
 
 import com.wuhantoc.javasample.group3.impl.SimpleUserAccessLockerBox;
-import com.wuhantoc.javasample.group3.impl.UserAccessLockerWithCustomDigitTicketAsUserAccessLockerTest;
-import com.wuhantoc.javasample.group3.impl.UserSuperRobotLockerWithCustomDigitTicket;
 import com.wuhantoc.javasample.group3.impl.UserSuperRobotLockerWithUUIDTicket;
 import com.wuhantoc.javasample.group3.impl.UserSuperRobotLockerWithUUIDTicketAsUserAccessLockerTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.TestInstanceFactory;
-import org.junit.jupiter.api.extension.TestInstanceFactoryContext;
-import org.junit.jupiter.api.extension.TestInstantiationException;
 
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
