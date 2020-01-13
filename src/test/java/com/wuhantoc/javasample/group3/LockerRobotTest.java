@@ -55,7 +55,8 @@ public class LockerRobotTest {
         //then
         if (expectedResult.isSuccess()) {
             assertTrue(result.isSuccess());
-            assertNotNull(result.getTicket());
+            assertNotNull(result.getLockerTicket());
+            assertNotNull(result.getRobotTicket());
             int index = 0;
             for (UserRobotAccessLocker locker : lockers) {
                 if (index == expectedResult.getLockerIndex()) {
@@ -149,7 +150,7 @@ public class LockerRobotTest {
 
     private static Arguments givenRobotAndTicketAcquireFromStore() {
         final Cargo cargo = mock(Cargo.class);
-        Function<LockerRobot, String> ticketProvider = robot -> robot.storeCargo(cargo).getTicket();
+        Function<LockerRobot, String> ticketProvider = robot -> robot.storeCargo(cargo).getRobotTicket();
         return Arguments.of(singletonList(AVAILABLE), ticketProvider,
                 InnerResult.takeOutSuccess(cargo, "a_robot_and_ticket_acquire_from_store"));
     }
@@ -161,7 +162,7 @@ public class LockerRobotTest {
             String differentTicket;
             do {
                 differentTicket = UUID.randomUUID().toString();
-            } while (differentTicket.equals(result.getTicket()));
+            } while (differentTicket.equals(result.getRobotTicket()));
             return differentTicket;
         };
         return Arguments.of(singletonList(AVAILABLE), ticketProvider,
@@ -172,9 +173,8 @@ public class LockerRobotTest {
         final Cargo cargo = mock(Cargo.class);
         Function<LockerRobot, String> ticketProvider = robot -> {
             RobotStoreCargoResult storeCargoResult = robot.storeCargo(cargo);
-            String storeCargoTicket = storeCargoResult.getTicket();
-            storeCargoResult.getLocker().userTakeOut(storeCargoTicket);
-            return storeCargoTicket;
+            storeCargoResult.getLocker().userTakeOut(storeCargoResult.getLockerTicket());
+            return storeCargoResult.getRobotTicket();
         };
         return Arguments.of(singletonList(AVAILABLE), ticketProvider,
                 InnerResult.takeOutFail("a_robot_and_used_ticket"));

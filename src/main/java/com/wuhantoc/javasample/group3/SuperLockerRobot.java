@@ -15,8 +15,8 @@ public class SuperLockerRobot extends AbstractLockerRobot {
     }
 
     @Override
-    public RobotTakeOutCargoResult takeOutCargo(String ticket) {
-        return super.takeOutCargo(ticket);
+    public RobotTakeOutCargoResult takeOutCargo(String robotTicket) {
+        return super.takeOutCargo(robotTicket);
     }
 
     @Override

@@ -32,8 +32,9 @@ class UserUsingLockerRobotWithDigitTicketLockerTest extends LockerRobotTest {
         for (int i = 0; i < times; i++) {
             RobotStoreCargoResult result = robot.storeCargo(ticketCargoEntries[i].cargo);
             assertTrue(result.isSuccess());
-            assertNotNull(result.getTicket());
-            ticketCargoEntries[i].ticket = result.getTicket();
+            assertNotNull(result.getLockerTicket());
+            assertNotNull(result.getRobotTicket());
+            ticketCargoEntries[i].ticket = result.getRobotTicket();
         }
         for (UserTicketCargoEntry entry : ticketCargoEntries) {
             RobotTakeOutCargoResult result = robot.takeOutCargo(entry.ticket);

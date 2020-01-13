@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.wuhantoc.javasample.group3.RobotStoreCargoResult.storeCargoFail;
 import static com.wuhantoc.javasample.group3.RobotStoreCargoResult.storeCargoSuccess;
@@ -16,7 +17,7 @@ abstract class AbstractLockerRobot {
 
     private final Collection<UserRobotAccessLocker> lockers;
 
-    private final Map<String, UserRobotAccessLocker> ticketLockerMap;
+    private final Map<String, LockerAndTicket> ticketLockerMap;
 
     protected AbstractLockerRobot(Collection<? extends UserRobotAccessLocker> lockers) {
         this.lockers = new ArrayList<>(lockers.size());
@@ -28,18 +29,19 @@ abstract class AbstractLockerRobot {
         for (UserRobotAccessLocker locker : sortLockersBeforeStore(lockers)) {
             RobotStoreResult storeResult = locker.robotStore();
             if (storeResult.isSuccess()) {
-                ticketLockerMap.put(storeResult.getTicket(), locker);
+                String robotTicket = UUID.randomUUID().toString();
+                ticketLockerMap.put(robotTicket, new LockerAndTicket(locker, storeResult.getTicket()));
                 storeResult.getLockerBox().store(cargo);
-                return storeCargoSuccess(storeResult.getTicket(), locker);
+                return storeCargoSuccess(robotTicket, storeResult.getTicket(), locker);
             }
         }
         return storeCargoFail(ROBOT_STORE_FAIL_MESSAGE);
     }
 
-    public RobotTakeOutCargoResult takeOutCargo(String ticket) {
-        if (ticketLockerMap.containsKey(ticket)) {
-            UserRobotAccessLocker locker = ticketLockerMap.remove(ticket);
-            RobotTakeOutResult takeOutResult = locker.robotTakeOut(ticket);
+    protected RobotTakeOutCargoResult takeOutCargo(String robotTicket) {
+        if (ticketLockerMap.containsKey(robotTicket)) {
+            LockerAndTicket lockerAndTicket = ticketLockerMap.remove(robotTicket);
+            RobotTakeOutResult takeOutResult = lockerAndTicket.locker.robotTakeOut(lockerAndTicket.ticket);
             if (takeOutResult.isSuccess()) {
                 return takeOutSuccess(takeOutResult.getLockerBox().get());
             }
@@ -48,5 +50,15 @@ abstract class AbstractLockerRobot {
     }
 
     protected abstract Collection<? extends UserRobotAccessLocker> sortLockersBeforeStore(Collection<UserRobotAccessLocker> lockers);
+
+    private static class LockerAndTicket {
+        private UserRobotAccessLocker locker;
+        private String ticket;
+
+        private LockerAndTicket(UserRobotAccessLocker locker, String ticket) {
+            this.locker = locker;
+            this.ticket = ticket;
+        }
+    }
 
 }
