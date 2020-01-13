@@ -15,7 +15,7 @@ import static org.junit.platform.commons.util.StringUtils.isNotBlank;
 
 public class UserUsingLockerWithUUIDLockerTest extends UserSuperRobotLockerWithUUIDTicketAsUserAccessLockerTest {
 
-    protected UserUsingLockerWithUUIDLockerTest(BiFunction<Boolean, Supplier<UserRobotAccessLockerBox>, UserAccessLocker> lockerProvider) {
+    protected UserUsingLockerWithUUIDLockerTest(BiFunction<Status, Supplier<UserRobotAccessLockerBox>, UserAccessLocker> lockerProvider) {
         super(lockerProvider);
     }
 

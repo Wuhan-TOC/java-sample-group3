@@ -35,6 +35,8 @@ task integrationTest(type: Test) {
     classpath = sourceSets.integrationTest.runtimeClasspath
 }
 
+tasks.bootJar.enabled false
+
 project.integrationTest {
     outputs.upToDateWhen { false }
 }

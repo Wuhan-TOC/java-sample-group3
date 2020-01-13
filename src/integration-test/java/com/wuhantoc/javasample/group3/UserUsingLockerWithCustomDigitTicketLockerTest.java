@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 
 public class UserUsingLockerWithCustomDigitTicketLockerTest extends UserAccessLockerWithCustomDigitTicketAsUserAccessLockerTest {
 
-    protected UserUsingLockerWithCustomDigitTicketLockerTest(BiFunction<Boolean, Supplier<UserRobotAccessLockerBox>, UserAccessLocker> lockerProvider) {
+    protected UserUsingLockerWithCustomDigitTicketLockerTest(BiFunction<Status, Supplier<UserRobotAccessLockerBox>, UserAccessLocker> lockerProvider) {
         super(lockerProvider);
     }
 

@@ -1,5 +1,6 @@
 package com.wuhantoc.javasample.group3.impl;
 
+import com.wuhantoc.javasample.group3.Status;
 import com.wuhantoc.javasample.group3.UserAccessLocker;
 import com.wuhantoc.javasample.group3.UserAccessLockerBox;
 import com.wuhantoc.javasample.group3.UserAccessLockerTest;
@@ -18,13 +19,14 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
+import static com.wuhantoc.javasample.group3.Status.FULL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(UserAccessLockerWithCustomDigitTicketAsUserAccessLockerTest.LockerTestInstanceFactory.class)
 public class UserAccessLockerWithCustomDigitTicketAsUserAccessLockerTest extends UserAccessLockerTest {
 
-    protected UserAccessLockerWithCustomDigitTicketAsUserAccessLockerTest(BiFunction<Boolean, Supplier<UserRobotAccessLockerBox>, UserAccessLocker> lockerProvider) {
+    protected UserAccessLockerWithCustomDigitTicketAsUserAccessLockerTest(BiFunction<Status, Supplier<UserRobotAccessLockerBox>, UserAccessLocker> lockerProvider) {
         super(lockerProvider);
     }
 
@@ -59,8 +61,8 @@ public class UserAccessLockerWithCustomDigitTicketAsUserAccessLockerTest extends
 
         @Override
         public Object createTestInstance(TestInstanceFactoryContext factoryContext, ExtensionContext extensionContext) throws TestInstantiationException {
-            BiFunction<Boolean, Supplier<UserRobotAccessLockerBox>, UserAccessLocker> lockerProvider = (fullLocker, lockerBoxSupplier) -> {
-                if (fullLocker) {
+            BiFunction<Status, Supplier<UserRobotAccessLockerBox>, UserAccessLocker> lockerProvider = (status, lockerBoxSupplier) -> {
+                if (status == FULL) {
                     return initFullLocker(lockerBoxSupplier);
                 }
                 return initAvailableLocker(1, 4, lockerBoxSupplier);
