@@ -11,6 +11,8 @@ public class LockerBox {
     }
 
     public Cargo get() {
-        return cargo;
+        Cargo ret = cargo;
+        cargo = null;
+        return ret;
     }
 }
