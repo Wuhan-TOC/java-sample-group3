@@ -1,12 +1,13 @@
-package com.wuhantoc.javasample.group3;
+package com.wuhantoc.javasample.group3.lockerrobot;
 
+import com.wuhantoc.javasample.group3.locker.Locker;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
-public class RobotStoreCargoResult {
+public class RobotStoreResult {
 
     private final boolean success;
 
@@ -14,15 +15,15 @@ public class RobotStoreCargoResult {
 
     private final String lockerTicket;
 
-    private final UserAccessLocker locker;
+    private final Locker locker;
 
     private final String errorMessage;
 
-    public static RobotStoreCargoResult storeCargoSuccess(String robotTicket, String lockerTicket, UserAccessLocker locker) {
+    public static RobotStoreResult storeRobotSuccess(String robotTicket, String lockerTicket, Locker locker) {
         return builder().success(true).robotTicket(robotTicket).lockerTicket(lockerTicket).locker(locker).build();
     }
 
-    public static RobotStoreCargoResult storeCargoFail(String reason) {
+    public static RobotStoreResult storeRobotFail(String reason) {
         return builder().success(false).errorMessage(reason).build();
     }
 

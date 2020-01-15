@@ -1,8 +1,10 @@
 package com.wuhantoc.javasample.group3;
 
-public interface Cargo {
+public class Cargo {
 
     @Override
-    boolean equals(Object another);
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
 
 }
