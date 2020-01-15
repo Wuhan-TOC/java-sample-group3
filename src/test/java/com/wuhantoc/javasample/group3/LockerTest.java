@@ -79,6 +79,24 @@ class LockerTest {
     }
 
     @Test
+    void should_get_0_vacancy_rate_when_get_vacancy_rate_give_an_0_capacity_locker() {
+        //given
+        int capacity = 0;
+        Locker locker = initEmptyLocker(capacity);
+        //when & then
+        assertEquals(0, locker.getVacancyRate());
+    }
+
+    @Test
+    void should_get_1_vacancy_rate_when_get_vacancy_rate_give_an_24_capacity_locker() {
+        //given
+        int capacity = 24;
+        Locker locker = initEmptyLocker(capacity);
+        //when & then
+        assertEquals(1, locker.getVacancyRate());
+    }
+
+    @Test
     void should_get_0_point_5_vacancy_rate_when_get_vacancy_rate_give_an_24_capacity_locker_stored_12_times() {
         //given
         int capacity = 24;
